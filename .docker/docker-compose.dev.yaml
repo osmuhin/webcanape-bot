@@ -5,7 +5,6 @@ services:
   php:
     build: ./php
     volumes:
-      - ./php/php.dev.ini:/usr/local/etc/php/php.ini
       - ../:/app
       - ../.runtime/cache/composer:/.composer/cache
       - ../.runtime/logs/php:/var/log/php
@@ -13,20 +12,18 @@ services:
     working_dir: /app
     depends_on:
       - mariadb
-      - redis
 
   cron:
     build: ./cron
     working_dir: /app
+    user: $USER_ID:$GROUP_ID
     volumes:
-      - ./php/php.dev.ini:/usr/local/etc/php/php.ini
       - ../:/app
       - ../.runtime/logs/cron:/var/log/cron
 
   queue:
-    build: ./php
+    build: ./queue
     volumes:
-      - ./php/php.dev.ini:/usr/local/etc/php/php.ini
       - ../:/app
       - ../.runtime/cache/composer:/.composer/cache
       - ../.runtime/logs/php:/var/log/php
@@ -34,7 +31,6 @@ services:
     working_dir: /app
     depends_on:
       - mariadb
-      - redis
     command: sh -c "php artisan queue:work"
 
   nginx:
@@ -55,11 +51,6 @@ services:
       MARIADB_DATABASE: ${DB_DATABASE}
     ports:
       - 3306:3306
-
-  redis:
-    image: redis:8-alpine
-    volumes:
-      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
 
   phpmyadmin:
     image: phpmyadmin:latest
