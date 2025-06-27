@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+
+set -eu
+
+RED='\033[0;31m'
+CIAN='\033[0;36m'
+PURPLE='\033[0;35m'
+YELLOW_FG='\033[1;33m'
+NC='\033[0m'
+
+path=$(dirname "$(realpath $0)")
+
+info_flag=0
+dry_run_flag=0
+
+while [[ "$#" -gt 0 ]]; do
+	case $1 in
+		-i|--info)
+			info_flag=1;
+			shift ;;
+		--dry-run)
+			dry_run_flag=1
+			info_flag=1
+			shift ;;
+		-*|--*)
+			echo "Unknown option $1"
+			exit 1 ;;
+		*)
+			break ;;
+	esac
+done
+
+# Ensure that there is .env file
+if [ ! -f $path/.env ]; then
+	echo -e "${YELLOW_FG}(warn): ${NC}The .env file is missing, dev environment using by default\n"
+else
+	set -a
+	. $path/.env
+	set +a
+fi
+
+export USER_ID=$(id -u) GROUP_ID=$(id -g)
+
+getInitCommand() {
+	dockerComposeFiles=()
+
+	if [ ! -f $path/.env ] || [ "$APP_ENV" = "local" ]; then
+		dockerComposeFiles+=("docker-compose.dev.yaml")
+	else
+		dockerComposeFiles+=("docker-compose.prod.yaml")
+	fi
+
+	if [ -f $path/docker-compose.override.yaml ]; then
+		dockerComposeFiles+=("docker-compose.override.yaml")
+	fi
+
+	result="docker compose "
+	for i in ${dockerComposeFiles[@]}; do
+		result+="-f $path/.docker/$i "
+	done
+
+	echo $result
+}
+
+runOrExec() {
+	service=$1
+	result="exec"
+
+	if [ -z `./corn ps -q $service` ] || [ -z `docker ps -q --no-trunc | grep $(./corn ps -q $service)` ]; then
+		result="run --rm"
+	fi
+
+	echo $result
+}
+
+initCommand=$(getInitCommand)
+
+if [ $# = 0 ]; then
+	if [ $info_flag = 1 ]; then
+		echo -e "${PURPLE}${initCommand}${NC}\n"
+	fi
+
+	$initCommand
+	exit 0
+fi
+
+command=$1
+shift 1
+
+case $command in
+	"php")
+		payload="$(runOrExec php) php $@" ;;
+	"artisan" | "art" | "laravel" | "lara")
+		payload="$(runOrExec php) php php /app/artisan $@" ;;
+	"test")
+		payload="$(runOrExec php) php /app/vendor/bin/phpunit $@" ;;
+	"composer")
+		payload="$(runOrExec php) php composer $@" ;;
+	"yarn")
+		payload="$(runOrExec nodejs) nodejs yarn $@" ;;
+	"npx")
+		payload="$(runOrExec nodejs) nodejs npx $@" ;;
+	"nuxi")
+		payload="$(runOrExec nodejs) nodejs npx nuxi $@" ;;
+	"ngrok")
+		payload="run ngrok http host.docker.internal:80 --region=eu" ;;
+	*)
+		payload="${command} $@" ;;
+esac
+
+fullCommand="${initCommand} ${payload}"
+
+if [ $info_flag = 1 ]; then
+	echo -e "${PURPLE}${fullCommand}${NC}\n"
+fi
+
+if [ $dry_run_flag = 0 ]; then
+	$fullCommand
+fi
