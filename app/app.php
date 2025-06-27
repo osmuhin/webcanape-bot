@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
 
 putenv('APP_SERVICES_CACHE=' . __DIR__ . '/../.runtime/cache/services.php');
 putenv('APP_PACKAGES_CACHE=' . __DIR__ . '/../.runtime/cache/packages.php');
@@ -14,7 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
 		health: '/up',
 	)
 	->withProviders([
-		App\Providers\AppServiceProvider::class
+		\App\Providers\AppServiceProvider::class
 	])
+	->withExceptions(function (Exceptions $exceptions) {
+		//
+	})
 	->create()
 	->useBootstrapPath(__DIR__);
