@@ -61,19 +61,19 @@ return [
 		'sql' => [
 			'driver' => 'daily',
 			'days' => 2,
-			'path' => base_path('.runtime/logs/app/sql.log')
+			'path' => runtime_path('logs/app/sql.log')
 		],
 
 		'single' => [
 			'driver' => 'single',
-			'path' => base_path('.runtime/logs/app/laravel.log'),
+			'path' => runtime_path('logs/app/laravel.log'),
 			'level' => env('LOG_LEVEL', 'debug'),
 			'replace_placeholders' => true
 		],
 
 		'emergency' => [
 			'driver' => 'single',
-			'path' => base_path('.runtime/logs/app/emergency.log'),
+			'path' => runtime_path('logs/app/emergency.log'),
 			'level' => 'emergency',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -81,7 +81,7 @@ return [
 
 		'alert' => [
 			'driver' => 'single',
-			'path' => base_path('.runtime/logs/app/alert.log'),
+			'path' => runtime_path('logs/app/alert.log'),
 			'level' => 'alert',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -89,7 +89,7 @@ return [
 
 		'critical' => [
 			'driver' => 'single',
-			'path' => base_path('.runtime/logs/app/critical.log'),
+			'path' => runtime_path('logs/app/critical.log'),
 			'level' => 'critical',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -97,7 +97,7 @@ return [
 
 		'error' => [
 			'driver' => 'single',
-			'path' => base_path('.runtime/logs/app/error.log'),
+			'path' => runtime_path('logs/app/error.log'),
 			'level' => 'error',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -105,7 +105,7 @@ return [
 
 		'warning' => [
 			'driver' => 'single',
-			'path' => base_path('.runtime/logs/app/warning.log'),
+			'path' => runtime_path('logs/app/warning.log'),
 			'level' => 'warning',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -113,7 +113,7 @@ return [
 
 		'notice' => [
 			'driver' => 'single',
-			'path' => base_path('.runtime/logs/app/notice.log'),
+			'path' => runtime_path('logs/app/notice.log'),
 			'level' => 'notice',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -121,7 +121,7 @@ return [
 
 		'info' => [
 			'driver' => 'single',
-			'path' => base_path('.runtime/logs/app/info.log'),
+			'path' => runtime_path('logs/app/info.log'),
 			'level' => 'info',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -129,7 +129,7 @@ return [
 
 		'debug' => [
 			'driver' => 'single',
-			'path' => base_path('.runtime/logs/app/debug.log'),
+			'path' => runtime_path('logs/app/debug.log'),
 			'level' => 'debug',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -137,7 +137,7 @@ return [
 
 		'daily' => [
 			'driver' => 'daily',
-			'path' => base_path('.runtime/logs/app/laravel.log'),
+			'path' => runtime_path('logs/app/laravel.log'),
 			'level' => env('LOG_LEVEL', 'debug'),
 			'days' => 14,
 			'replace_placeholders' => true,
