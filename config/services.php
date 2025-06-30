@@ -1,7 +1,6 @@
 <?php
 
 return [
-
 	/*
 	|--------------------------------------------------------------------------
 	| Third Party Services
@@ -35,4 +34,13 @@ return [
 		],
 	],
 
+	'yandex' => [
+		'oauth_token' => env('YANDEX_OAUTH_TOKEN'),
+		'org_id' => env('YANDEX_ORG_ID')
+	],
+
+	'telegram' => [
+		'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+		'admin_user_id' => env('TELEGRAM_ADMIN_USER_ID')
+	]
 ];

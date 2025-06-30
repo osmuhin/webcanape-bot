@@ -50,7 +50,7 @@ return [
 		'temp' => [
 			'name' => 'temp',
 			'driver' => 'local',
-			'root' => base_path('.runtime/temp'),
+			'root' => runtime_path('temp'),
 			'throw' => false
 		],
 

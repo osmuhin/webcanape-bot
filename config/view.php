@@ -30,7 +30,7 @@ return [
 
 	'compiled' => env(
 		'VIEW_COMPILED_PATH',
-		runtime_path('cache/views')
+		runtime_path('cache/app/views')
 	),
 
 ];

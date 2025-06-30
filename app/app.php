@@ -3,11 +3,11 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 
-putenv('APP_SERVICES_CACHE=' . __DIR__ . '/../.runtime/cache/services.php');
-putenv('APP_PACKAGES_CACHE=' . __DIR__ . '/../.runtime/cache/packages.php');
-putenv('APP_CONFIG_CACHE='   . __DIR__ . '/../.runtime/cache/config.php');
-putenv('APP_ROUTES_CACHE='   . __DIR__ . '/../.runtime/cache/routes-v7.php');
-putenv('APP_EVENTS_CACHE='   . __DIR__ . '/../.runtime/cache/events.php');
+putenv('APP_SERVICES_CACHE=' . __DIR__ . '/../.runtime/cache/app/services.php');
+putenv('APP_PACKAGES_CACHE=' . __DIR__ . '/../.runtime/cache/app/packages.php');
+putenv('APP_CONFIG_CACHE='   . __DIR__ . '/../.runtime/cache/app/config.php');
+putenv('APP_ROUTES_CACHE='   . __DIR__ . '/../.runtime/cache/app/routes-v7.php');
+putenv('APP_EVENTS_CACHE='   . __DIR__ . '/../.runtime/cache/app/events.php');
 
 return Application::configure(basePath: dirname(__DIR__))
 	->withRouting(
