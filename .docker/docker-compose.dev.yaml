@@ -24,6 +24,9 @@ services:
     volumes:
       - ../:/app
       - ../.runtime/logs/cron:/var/log/cron
+    command:
+      - crond
+      - "-f"
 
   queue:
     build: ./queue
@@ -36,7 +39,10 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
-    command: sh -c "php artisan queue:work"
+    command:
+      - php
+      - artisan
+      - queue:work
 
   nginx:
     image: nginx:alpine
@@ -45,6 +51,8 @@ services:
     working_dir: /app
     ports:
       - 80:80
+    depends_on:
+      - php
 
   mariadb:
     image: mariadb:11.3
