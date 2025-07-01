@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
 
 putenv('APP_SERVICES_CACHE=' . __DIR__ . '/../.runtime/cache/app/services.php');
 putenv('APP_PACKAGES_CACHE=' . __DIR__ . '/../.runtime/cache/app/packages.php');
@@ -18,6 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
 		\App\Providers\AppServiceProvider::class
 	])
 	->withExceptions(function (Exceptions $exceptions) {
+		//
+	})
+	->withMiddleware(function (Middleware $middleware) {
 		//
 	})
 	->create()
