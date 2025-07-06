@@ -15,9 +15,11 @@ return new class extends Migration
 			$table->id();
 			$table->string('first_name');
 			$table->string('last_name');
-			$table->string('telegram_user_id')->unique()->nullable();
+			$table->string('photo');
+			$table->string('post');
 			$table->date('birthdate');
-			$table->timestamp('created_at')->useCurrent();
+			$table->string('telegram_user_id')->unique()->nullable();
+			$table->timestamp('joined_at')->nullable()->default(null);
 		});
 	}
 

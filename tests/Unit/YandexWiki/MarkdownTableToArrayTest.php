@@ -35,13 +35,13 @@ class MarkdownTableToArrayTest extends TestCase
 
 	private function getStaffDetailsMd()
 	{
-		return file_get_contents(__DIR__ . '/resources/staff-details.txt');
+		return file_get_contents(__DIR__ . '/../.resources/staff-details.txt');
 	}
 
 	private function getStaffDetailsExpected()
 	{
 		return json_decode(
-			file_get_contents(__DIR__ . '/resources/staff-details-expected.json'),
+			file_get_contents(__DIR__ . '/../.resources/staff-details-expected.json'),
 			true,
 			flags: JSON_THROW_ON_ERROR
 		);
@@ -49,13 +49,13 @@ class MarkdownTableToArrayTest extends TestCase
 
 	private function getBirthdaysMd()
 	{
-		return file_get_contents(__DIR__ . '/resources/birthdates.txt');
+		return file_get_contents(__DIR__ . '/../.resources/birthdates.txt');
 	}
 
 	private function getBirthdaysExpected()
 	{
 		return json_decode(
-			file_get_contents(__DIR__ . '/resources/birthdates-expected.json'),
+			file_get_contents(__DIR__ . '/../.resources/birthdates-expected.json'),
 			true,
 			flags: JSON_THROW_ON_ERROR
 		);

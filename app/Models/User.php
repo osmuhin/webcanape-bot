@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $first_name
  * @property string $last_name
- * @property string|null $telegram_user_id
+ * @property string $photo
+ * @property string $post
  * @property string $birthdate
- * @property string $createdAt
+ * @property string|null $telegram_user_id
+ * @property string $joined_at
  */
 class User extends Model
 {
@@ -21,7 +23,7 @@ class User extends Model
 	protected $table = 'users';
 
 	protected $casts = [
-		'created_at' => 'timestamp',
+		'joined_at' => 'timestamp',
 		'birthdate' => 'date'
 	];
 }

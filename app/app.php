@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
 		health: '/up',
 	)
 	->withProviders([
-		\App\Providers\AppServiceProvider::class
+		\App\Providers\BirthdayServiceProvider::class
 	])
 	->withExceptions(function (Exceptions $exceptions) {
 		//
