@@ -17,13 +17,10 @@ class DataProvider implements DataProviderContract
 
 	private YandexWiki $wiki;
 
-	private YandexWikiParser $parser;
-
 	public function __construct(array $config)
 	{
 		$this->birthdatesPageSlug = $config['birthdates_page_slug'];
 		$this->staffDetailPages = $config['staff_detail_pages'];
-		$this->parser = new YandexWikiParser();
 	}
 
 	public function setYandexWikiClient(YandexWiki $wiki)
@@ -33,16 +30,14 @@ class DataProvider implements DataProviderContract
 
 	public function getUsers(): Collection
 	{
-		$collection = collect();
-
 		$this->fetchStaffTable();
 
-		return $collection;
+		return collect();
 	}
 
 	private function fetchTable(string $slug)
 	{
-		$getPageRequest = new GetPage(slug: $this->staffDetailPages[0]);
+		$getPageRequest = new GetPage(slug: $slug);
 		$getPageRequest->withField(GetPage::FIELD_CONTENT);
 
 		$content = $this->wiki->send($getPageRequest)->json()['content'];
@@ -55,10 +50,16 @@ class DataProvider implements DataProviderContract
 
 	private function fetchStaffTable()
 	{
+		$summarized = [];
+
 		foreach ($this->staffDetailPages as $slug) {
-			$this->parser->handleStuffInfoTable(
+			$adapter = new EmployeeTableAdapter(
 				$this->fetchTable($slug)
 			);
+
+			$summarized = array_merge($summarized, $adapter->transform());
 		}
+
+		return $summarized;
 	}
 }

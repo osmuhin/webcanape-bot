@@ -3,7 +3,6 @@
 namespace App\Services\Birthday\DataProviders\WebcanapeYandexWiki;
 
 use App\Libs\YandexSdk\Wiki\MarkdownParser\TableState;
-use Illuminate\Support\Collection;
 
 abstract class AbstractTableAdapter
 {
@@ -14,16 +13,21 @@ abstract class AbstractTableAdapter
 		//
 	}
 
-	abstract public function transform(): Collection;
+	abstract public function transform(): array;
 
 	abstract protected function getMapHeaderColumns(): array;
 
-	protected function normalizeCell(string $value): string
+	protected function normalizeCell(?string $value): ?string
 	{
+		if ($value === null) {
+			return null;
+		}
+
 		$value = preg_replace('/\x{A0}/u', ' ', $value);
 		$value = trim($value, characters: " \n\r\t\v\0*");
+		$value = preg_replace('/\s{2,}/u', ' ', $value);
 
-		return preg_replace('/\s{2,}/u', ' ', $value);
+		return $value === '' ? null : $value;
 	}
 
 	protected function splitFullName(string $fullName): array
@@ -51,5 +55,12 @@ abstract class AbstractTableAdapter
 				$this->columnOrder[$columnName] = $cellIdx;
 			}
 		}
+	}
+
+	protected function getCell(array $row, string $cellName): ?string
+	{
+		return $this->normalizeCell(
+			$row[$this->columnOrder[$cellName]]
+		);
 	}
 }
