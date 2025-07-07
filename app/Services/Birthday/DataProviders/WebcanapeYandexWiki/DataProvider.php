@@ -5,10 +5,10 @@ namespace App\Services\Birthday\DataProviders\WebcanapeYandexWiki;
 use App\Libs\YandexSdk\Wiki\GetPage;
 use App\Libs\YandexSdk\Wiki\MarkdownParser\MarkdownParser;
 use App\Libs\YandexSdk\Wiki\YandexWiki;
-use App\Services\Birthday\Contracts\DataProvider;
+use App\Services\Birthday\Contracts\DataProvider as DataProviderContract;
 use Illuminate\Support\Collection;
 
-class WebcanapeYandexWikiDataProvider implements DataProvider
+class DataProvider implements DataProviderContract
 {
 	private string $birthdatesPageSlug;
 
@@ -17,10 +17,13 @@ class WebcanapeYandexWikiDataProvider implements DataProvider
 
 	private YandexWiki $wiki;
 
+	private YandexWikiParser $parser;
+
 	public function __construct(array $config)
 	{
 		$this->birthdatesPageSlug = $config['birthdates_page_slug'];
 		$this->staffDetailPages = $config['staff_detail_pages'];
+		$this->parser = new YandexWikiParser();
 	}
 
 	public function setYandexWikiClient(YandexWiki $wiki)
@@ -52,17 +55,10 @@ class WebcanapeYandexWikiDataProvider implements DataProvider
 
 	private function fetchStaffTable()
 	{
-		$table = [];
-
 		foreach ($this->staffDetailPages as $slug) {
-			$table[] = $this->fetchTable($slug);
+			$this->parser->handleStuffInfoTable(
+				$this->fetchTable($slug)
+			);
 		}
-
-		return $table;
-	}
-
-	private function extractStaffInfo()
-	{
-
 	}
 }

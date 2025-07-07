@@ -10,7 +10,7 @@ class UserData
 
 	public string $lastName;
 
-	public Carbon $birthDate;
+	public Carbon $birthdate;
 
 	public string $photo;
 

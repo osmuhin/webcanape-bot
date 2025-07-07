@@ -35,7 +35,7 @@ class WebcanapeYaWikiDPTest extends TestCase
 		$wiki = new YandexWiki('test', 1);
 		$wiki->withMockClient($mockClient);
 
-		$provider = new WebcanapeYandexWikiDataProvider(
+		$provider = new DataProvider(
 			config: $this->getProviderConfig()
 		);
 		$provider->setYandexWikiClient($wiki);
