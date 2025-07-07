@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 interface DataProvider
 {
 	/**
-	 * @return \Illuminate\Support\Collection<int, \App\Models\User>
+	 * @return \App\Services\Birthday\UserData[]
 	 */
-	public function getUsers(): Collection;
+	public function getUsers(): array;
 }

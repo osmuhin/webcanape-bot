@@ -2,9 +2,13 @@
 
 namespace App\Services\Birthday\DataProviders\WebcanapeYandexWiki;
 
+use Carbon\Carbon;
+
 class BirthdayData
 {
-	public string $fullName;
+	public string $firstName;
 
-	public string $birthdate;
+	public string $lastName;
+
+	public Carbon $birthdate;
 }

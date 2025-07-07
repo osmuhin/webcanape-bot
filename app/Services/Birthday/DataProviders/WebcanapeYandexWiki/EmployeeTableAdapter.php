@@ -36,9 +36,12 @@ class EmployeeTableAdapter extends AbstractTableAdapter
 	private function makeDto(array $row): EmployeeData
 	{
 		$dto = new EmployeeData();
-		$dto->fullName = $this->getCell($row, 'fullName');
 		$dto->post = $this->getCell($row, 'post');
 		$dto->photo = $this->getCell($row, 'photo');
+
+		[$dto->firstName, $dto->lastName] = $this->splitFullName(
+			$this->getCell($row, 'fullName')
+		);
 
 		return $dto;
 	}

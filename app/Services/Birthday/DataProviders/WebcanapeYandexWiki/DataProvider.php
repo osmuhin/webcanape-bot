@@ -6,7 +6,7 @@ use App\Libs\YandexSdk\Wiki\GetPage;
 use App\Libs\YandexSdk\Wiki\MarkdownParser\MarkdownParser;
 use App\Libs\YandexSdk\Wiki\YandexWiki;
 use App\Services\Birthday\Contracts\DataProvider as DataProviderContract;
-use Illuminate\Support\Collection;
+use App\Services\Birthday\UserData;
 
 class DataProvider implements DataProviderContract
 {
@@ -28,11 +28,46 @@ class DataProvider implements DataProviderContract
 		$this->wiki = $wiki;
 	}
 
-	public function getUsers(): Collection
+	public function getUsers(): array
 	{
-		$this->fetchStaffTable();
+		return $this->combine(
+			$this->fetchStaffTable(),
+			$this->fetchBirthdayTable()
+		);
+	}
 
-		return collect();
+	/**
+	 * @param \App\Services\Birthday\DataProviders\WebcanapeYandexWiki\EmployeeData[] $employeeCollection
+	 * @param \App\Services\Birthday\DataProviders\WebcanapeYandexWiki\BirthdayData[] $birthdayCollection
+	 */
+	private function combine(array $employeeCollection, array $birthdayCollection): array
+	{
+		$users = [];
+
+		foreach ($employeeCollection as $employee) {
+			$user = new UserData();
+			$user->firstName = $employee->firstName;
+			$user->lastName = $employee->lastName;
+			$user->photo = $employee->photo;
+			$user->post = $employee->post;
+
+			foreach ($birthdayCollection as $birthday) {
+				if (
+					$birthday->firstName == $employee->firstName &&
+					$birthday->lastName == $employee->lastName
+				) {
+					$user->birthdate = $birthday->birthdate->toDateTimeString();
+
+					break;
+				}
+			}
+
+			if (isset($user->birthdate)) {
+				$users[] = $user;
+			}
+		}
+
+		return $users;
 	}
 
 	private function fetchTable(string $slug)
@@ -61,5 +96,14 @@ class DataProvider implements DataProviderContract
 		}
 
 		return $summarized;
+	}
+
+	private function fetchBirthdayTable()
+	{
+		$adapter = new BirthdayTableAdapter(
+			$this->fetchTable($this->birthdatesPageSlug)
+		);
+
+		return $adapter->transform();
 	}
 }

@@ -6,13 +6,13 @@ use Carbon\Carbon;
 
 class UserData
 {
-	public string $firstName;
+	public ?string $firstName;
 
-	public string $lastName;
+	public ?string $lastName;
 
-	public Carbon $birthdate;
+	public ?string $birthdate;
 
-	public string $photo;
+	public ?string $photo;
 
-	public string $post;
+	public ?string $post;
 }
