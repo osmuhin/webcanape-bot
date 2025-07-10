@@ -43,26 +43,22 @@ class TableState implements Iterator
         return isset($this->rows[$this->iteratorPosition]);
     }
 
-	public function handleLine(string $line): void
+	public function handleLine(string $originalLine, string $trimmerLine): void
 	{
-		if ($line === '||') {
+		if ($trimmerLine === '||') {
 			$this->checkoutRow();
 
 			return;
 		}
 
-		if ($line === '|') {
+		if ($trimmerLine === '|') {
 			$this->columnIdx++;
 
 			return;
 		}
 
 		if ($this->inRow) {
-			if (isset($this->rows[$this->rowIdx][$this->columnIdx])) {
-				$this->rows[$this->rowIdx][$this->columnIdx] .= "\n{$line}";
-			} else {
-				$this->rows[$this->rowIdx][$this->columnIdx] = $line;
-			}
+			$this->setCell($originalLine);
 		}
 	}
 
@@ -78,6 +74,15 @@ class TableState implements Iterator
 			$this->rows[$this->rowIdx] = [''];
 		} else {
 			$this->rowIdx++;
+		}
+	}
+
+	private function setCell(string $value): void
+	{
+		if (isset($this->rows[$this->rowIdx][$this->columnIdx])) {
+			$this->rows[$this->rowIdx][$this->columnIdx] .= $value;
+		} else {
+			$this->rows[$this->rowIdx][$this->columnIdx] = $value;
 		}
 	}
 }

@@ -2,6 +2,8 @@
 
 namespace App\Libs\YandexSdk\Wiki\MarkdownParser;
 
+use InvalidArgumentException;
+
 class MarkdownParser
 {
 	/** @var \App\Libs\YandexSdk\Wiki\MarkdownParser\TableState[] */
@@ -11,9 +13,22 @@ class MarkdownParser
 
 	private bool $tableMode = false;
 
-	public function __construct(private string $markdown)
+	public function __construct(private $stream)
 	{
+		if (!is_resource($stream)) {
+			throw new InvalidArgumentException('Resource stream is expected.');
+		}
 
+		if (!stream_get_meta_data($stream)['mode'] || !str_contains(stream_get_meta_data($stream)['mode'], 'r')) {
+			throw new InvalidArgumentException('Cannot read resource stream.');
+		}
+	}
+
+	public function read()
+	{
+		while ($char = fgetc($this->stream)) {
+
+		}
 	}
 
 	public function parse()
@@ -37,7 +52,7 @@ class MarkdownParser
 		}
 
 		if ($this->tableMode) {
-			return $this->currentTable->handleLine($trimmedLine);
+			return $this->currentTable->handleLine($line, $trimmedLine);
 		}
 	}
 

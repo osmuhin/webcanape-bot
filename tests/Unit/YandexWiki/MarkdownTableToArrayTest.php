@@ -3,61 +3,71 @@
 namespace Tests\Unit\YandexWiki;
 
 use App\Libs\YandexSdk\Wiki\MarkdownParser\MarkdownParser;
+use App\Libs\YandexSdk\Wiki\MarkdownParser\TableState;
 use PHPUnit\Framework\TestCase;
 
 class MarkdownTableToArrayTest extends TestCase
 {
-	public function test_parsing_staff_details(): void
+	public function test_parsing_table_in_yandex_markdown()
 	{
-		$markdown = $this->getStaffDetailsMd();
+		$markdown = $this->getMdWithTable();
+
+		// var_dump(preg_replace("/\n/", '\n', $markdown)); die;
 
 		$parser = new MarkdownParser($markdown);
 		$parser->parse();
 
-		$this->assertSame(
-			$this->getStaffDetailsExpected(),
-			$parser->tables[0]->getRows()
-		);
+		$this->assertCount(1, $parser->tables);
+		$this->assertInstanceOf(TableState::class, $table = $parser->tables[0]);
+
+		$this->assertSame([
+			["\n\n**Row1-Column1**\n\n", "\n\n**Row1-Column2**\n\n"],
+			["\n\nRow2-Column1\n\n", "\n\nRow2-Column2\n\n"],
+			["\n\nRow3-Column1\n\n", "\n\nRow3-Column2\n\n"],
+		], $table->getRows());
+
+		// \n||\n\n**Row1-Column1**\n\n|\n\n**Row1-Column2**\n\n||\n||\n\nRow2-Column1\n\n|\n\nRow2-Column2\n\n||\n||\n\nRow3-Column1\n\n|\n\nRow3-Column2\n\n||\n|#\n\n&nbsp;\n\nSome|| epilog 321\n
 	}
 
-	public function test_parsing_birthdays(): void
+	private function getMdWithTable(): string
 	{
-		$markdown = $this->getBirthdaysMd();
+		return <<<MD
+Some prolog 123
 
-		$parser = new MarkdownParser($markdown);
-		$parser->parse();
+#|
+||
 
-		$this->assertSame(
-			$this->getBirthdaysExpected(),
-			$parser->tables[0]->getRows()
-		);
-	}
+**Row1-Column1**
 
-	private function getStaffDetailsMd()
-	{
-		return file_get_contents(__DIR__ . '/../.resources/staff-details.txt');
-	}
+|
 
-	private function getStaffDetailsExpected()
-	{
-		return json_decode(
-			file_get_contents(__DIR__ . '/../.resources/staff-details-expected.json'),
-			true,
-			flags: JSON_THROW_ON_ERROR
-		);
-	}
+**Row1-Column2**
 
-	private function getBirthdaysMd()
-	{
-		return file_get_contents(__DIR__ . '/../.resources/birthdates.txt');
-	}
+||
+||
 
-	private function getBirthdaysExpected()
-	{
-		return json_decode(
-			file_get_contents(__DIR__ . '/../.resources/birthdates-expected.json'),
-			true,
-			flags: JSON_THROW_ON_ERROR
-		);
+Row2-Column1
+
+|
+
+Row2-Column2
+
+||
+||
+
+Row3-Column1
+
+|
+
+Row3-Column2
+
+||
+|#
+
+&nbsp;
+
+Some|| epilog 321
+
+MD;
 	}
 }
