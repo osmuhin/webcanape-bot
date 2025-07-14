@@ -4,7 +4,7 @@ namespace App\Libs\YandexSdk\Wiki\MarkdownParser;
 
 use InvalidArgumentException;
 
-class MarkdownParser
+class Parser
 {
 	/** @var \App\Libs\YandexSdk\Wiki\MarkdownParser\TableState[] */
 	public array $tables = [];
