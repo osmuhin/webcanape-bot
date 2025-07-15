@@ -56,7 +56,7 @@ class DataProvider implements DataProviderContract
 					$birthday->firstName == $employee->firstName &&
 					$birthday->lastName == $employee->lastName
 				) {
-					$user->birthdate = $birthday->birthdate->toDateTimeString();
+					$user->birthdate = $birthday->birthdate;
 
 					break;
 				}

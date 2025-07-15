@@ -3,6 +3,7 @@
 namespace App\Services\Birthday\DataProviders\WebcanapeYandexWiki;
 
 use App\Libs\YandexSdk\Wiki\MarkdownParser\TableState;
+use Illuminate\Support\Arr;
 
 abstract class AbstractTableAdapter
 {
@@ -51,7 +52,7 @@ abstract class AbstractTableAdapter
 		foreach ($headRow as $cellIdx => $cellValue) {
 			$value = $this->normalizeCell($cellValue);
 
-			if ($columnName = @$mapHeaderColumns[$value]) {
+			if ($columnName = Arr::get($mapHeaderColumns, $value)) {
 				$this->columnOrder[$columnName] = $cellIdx;
 			}
 		}

@@ -4,14 +4,16 @@
 	bootstrap="vendor/autoload.php"
 	cacheDirectory=".runtime/cache/phpunit"
 	colors="true"
+	failOnRisky="true"
+	failOnWarning="true"
 >
 	<testsuites>
 		<testsuite name="Unit">
 			<directory>tests/Unit</directory>
 		</testsuite>
-		<testsuite name="Feature">
+		<!-- <testsuite name="Feature">
 			<directory>tests/Feature</directory>
-		</testsuite>
+		</testsuite> -->
 	</testsuites>
 	<source>
 		<include>

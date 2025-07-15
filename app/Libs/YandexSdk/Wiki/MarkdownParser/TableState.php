@@ -58,11 +58,7 @@ class TableState implements Iterator
 		}
 
 		if ($this->inRow) {
-			if (isset($this->rows[$this->rowIdx][$this->columnIdx])) {
-				$this->rows[$this->rowIdx][$this->columnIdx] .= "\n{$line}";
-			} else {
-				$this->rows[$this->rowIdx][$this->columnIdx] = $line;
-			}
+			$this->setCell($line);
 		}
 	}
 
@@ -78,6 +74,15 @@ class TableState implements Iterator
 			$this->rows[$this->rowIdx] = [''];
 		} else {
 			$this->rowIdx++;
+		}
+	}
+
+	private function setCell(string $value): void
+	{
+		if (isset($this->rows[$this->rowIdx][$this->columnIdx])) {
+			$this->rows[$this->rowIdx][$this->columnIdx] .= $value;
+		} else {
+			$this->rows[$this->rowIdx][$this->columnIdx] = $value;
 		}
 	}
 }

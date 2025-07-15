@@ -10,9 +10,20 @@ class UserData
 
 	public ?string $lastName;
 
-	public ?string $birthdate;
+	public ?Carbon $birthdate;
 
 	public ?string $photo;
 
 	public ?string $post;
+
+	public function toArray()
+	{
+		return [
+			'first_name' => $this->firstName,
+			'last_name' => $this->lastName,
+			'birthdate' => $this->birthdate->toDateString(),
+			'photo' => $this->photo,
+			'post' => $this->post,
+		];
+	}
 }

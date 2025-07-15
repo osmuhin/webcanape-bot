@@ -5,10 +5,15 @@ namespace Tests\Unit\Birthday\DataProviders\WebCanapeYandexWiki;
 use App\Libs\YandexSdk\Wiki\GetPage;
 use App\Libs\YandexSdk\Wiki\YandexWiki;
 use App\Services\Birthday\DataProviders\WebcanapeYandexWiki\DataProvider;
+use App\Services\Birthday\UserData;
 use PHPUnit\Framework\TestCase;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\PendingRequest;
+
+use function PHPUnit\Framework\assertCount;
+use function PHPUnit\Framework\assertInstanceOf;
+use function PHPUnit\Framework\assertSame;
 
 class DataProviderTest extends TestCase
 {
@@ -21,15 +26,15 @@ class DataProviderTest extends TestCase
 				switch ($slug) {
 					case 'spisok-i-kontaktnye-dannye-sotrudnikov/administracija':
 						return MockResponse::make(body: json_encode([
-							'content' => $this->getResource('staff-details.txt')
+							'content' => $this->getStaffDetails1()
 						]));
 					case 'spisok-i-kontaktnye-dannye-sotrudnikov/administracija2':
 						return MockResponse::make(body: json_encode([
-							'content' => $this->getResource('birthdates.txt')
+							'content' => $this->getStaffDetails2()
 						]));
 					case 'hr/kontaktnye-dannye-sertifikaty-i-t.d.-sotrudnikov/dni-rozhdenija-sotrudnikov':
 						return MockResponse::make(body: json_encode([
-							'content' => $this->getResource('birthdates.txt')
+							'content' => $this->getBirthdays()
 						]));
 				}
 			}
@@ -45,7 +50,28 @@ class DataProviderTest extends TestCase
 
 		$users = $provider->getUsers();
 
+		assertCount(2, $users);
 
+		[$ivanov, $petrov] = $users;
+
+		assertInstanceOf(UserData::class, $ivanov);
+		assertInstanceOf(UserData::class, $petrov);
+
+		assertSame([
+			'first_name' => 'Иван',
+			'last_name' => 'Иванов',
+			'birthdate' => '2025-01-05',
+			'photo' => '![Иванов (Директор).png](/storage/ivanov.png =349x)',
+			'post' => 'Директор'
+		], $ivanov->toArray());
+
+		assertSame([
+			'first_name' => 'Василий',
+			'last_name' => 'Петров',
+			'birthdate' => '2025-09-30',
+			'photo' => '![Петров (Дизайнер).png](/storage/petrov.png =349x)',
+			'post' => 'Дизайнер'
+		], $petrov->toArray());
 	}
 
 	private function getProviderConfig()
@@ -61,10 +87,18 @@ class DataProviderTest extends TestCase
 		];
 	}
 
-	private function getResource(string $file)
+	private function getStaffDetails1()
 	{
-		return file_get_contents(
-			__DIR__ . "/../../../.resources/{$file}"
-		);
+		return "#|\n||\n\n**ФИО**\n\n|\n\n**Фото**\n\n|\n\n**Должность**\n\n|\n\n**Внутренний**\n\n|\n\n**Контакты**\n\n|\n\n**Немного о себе**\n\n||\n||\n\nИван Иванов\n\n|\n\n![Иванов (Директор).png](/storage/ivanov.png =349x)\n\n|\n\nДиректор\n\n|\n\n402\n\n|\n\n8 (999) 999-99-99\n\n[ivanov@example.ru](mailto:ivanov@example.ru)\n\n|\n\nЗначимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требует от нас системного анализа модели развития!\n\nЗадача...\n\n||\n|#";
+	}
+
+	private function getStaffDetails2()
+	{
+		return "#|\n||\n\n**ФИО**\n\n|\n\n**Фото**\n\n|\n\n**Должность**\n\n|\n\n**Внутренний**\n\n|\n\n**Контакты**\n\n|\n\n**Немного о себе**\n\n||\n||\nВасилий Петров\n\n|\n\n![Петров (Дизайнер).png](/storage/petrov.png =349x)\n\n|\n\nДизайнер\n\n|\n\n401\n\n|\n\n8 (988) 888-88-88\n\n[petrov@example.ru](mailto:petrov@example.ru)\n\n|\n\nЗначимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требует от нас системного анализа модели развития!\n\nЗадача...\n\n||\n|#";
+	}
+
+	private function getBirthdays()
+	{
+		return "#|\n||\n\n**Дата**\n\n|\n\n**ФИО**\n\n||\n||\n\n05 января\n\n|\n\nИван Иванов\n\n||\n||\n\n30 сентября\n\n|\n\nВасилий Петров\n\n||\n|#\n\n&nbsp;\n";
 	}
 }
