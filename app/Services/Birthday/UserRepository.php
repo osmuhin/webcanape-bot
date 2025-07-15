@@ -47,7 +47,6 @@ class UserRepository
 	public static function updateOrCreate(UserData $user): int
 	{
 		if ($dbUser = self::fetchByChecksum($user->checksum())) {
-
 			return $dbUser->id;
 		}
 
@@ -58,6 +57,7 @@ class UserRepository
 	public static function update(User $dbUser, UserData $userData): int
 	{
 		$dbUser->fill($userData->toArray());
+		$dbUser->birthdate = $userData->birthdate;
 		$dbUser->checksum = $userData->checksum();
 		$dbUser->save();
 
@@ -67,6 +67,7 @@ class UserRepository
 	public static function create(UserData $userData): int
 	{
 		$dbUser = new User($userData->toArray());
+		$dbUser->birthdate = $userData->birthdate;
 		$dbUser->checksum = $userData->checksum();
 		$dbUser->save();
 

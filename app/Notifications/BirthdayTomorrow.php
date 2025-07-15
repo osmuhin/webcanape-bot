@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Telegram\Enums\ParseMode;
 use NotificationChannels\Telegram\TelegramMessage;
 
 class BirthdayTomorrow extends Notification implements ShouldQueue
@@ -27,13 +28,12 @@ class BirthdayTomorrow extends Notification implements ShouldQueue
 	{
 		$message = TelegramMessage::create();
 
-		$date = Carbon::parse(
-			$this->bdayPerson->birthdate
-		)->translatedFormat('d F');
+		$date = Carbon::parse($this->bdayPerson->birthdate)->translatedFormat('d F');
 
 		$message->sendWhen((bool) $notifiable->telegram_user_id)
+			->parseMode(ParseMode::HTML)
 			->to($notifiable->telegram_user_id)
-			->content("🟠 {$this->bdayPerson->first_name} {$this->bdayPerson->last_name} ({$this->bdayPerson->post}) *завтра* ({$date}) будет праздновать день рождения.");
+			->content("🟠 {$this->bdayPerson->first_name} {$this->bdayPerson->last_name} ({$this->bdayPerson->post}) <b><u>завтра</u></b> будет праздновать день рождения ({$date}).");
 
 		return $message;
 	}
