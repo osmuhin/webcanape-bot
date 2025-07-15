@@ -16,6 +16,13 @@ class UserData
 
 	public ?string $post;
 
+	public function checksum()
+	{
+		return md5(
+			json_encode($this->toArray(), JSON_THROW_ON_ERROR)
+		);
+	}
+
 	public function toArray()
 	{
 		return [

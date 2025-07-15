@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -16,9 +17,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 class User extends Model
 {
-	const UPDATED_AT = null;
+	use HasFactory;
 
-	protected $fillable = ['first_name', 'last_name', 'telegram_user_id', 'birthdate'];
+	public $timestamps = false;
+
+	protected $fillable = ['first_name', 'last_name', 'photo', 'post', 'telegram_user_id', 'birthdate'];
 
 	protected $table = 'users';
 

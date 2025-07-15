@@ -52,7 +52,7 @@ abstract class AbstractTableAdapter
 		foreach ($headRow as $cellIdx => $cellValue) {
 			$value = $this->normalizeCell($cellValue);
 
-			if ($columnName = Arr::get($mapHeaderColumns, $value)) {
+			if ($value && $columnName = Arr::get($mapHeaderColumns, $value)) {
 				$this->columnOrder[$columnName] = $cellIdx;
 			}
 		}

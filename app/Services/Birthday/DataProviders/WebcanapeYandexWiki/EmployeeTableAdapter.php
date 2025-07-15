@@ -24,7 +24,9 @@ class EmployeeTableAdapter extends AbstractTableAdapter
 				continue;
 			}
 
-			$collection[] = $this->makeDto($row);
+			if ($this->getCell($row, 'post')) {
+				$collection[] = $this->makeDto($row);
+			}
 		}
 
 		return $collection;
@@ -57,8 +59,12 @@ class EmployeeTableAdapter extends AbstractTableAdapter
 	/**
 	 * @param string $mdPhoto Example: ![Иванов (Директор).png](/storage/ivanov.png =349x)
 	 */
-	private function normalizePhoto(string $mdPhoto): ?string
+	private function normalizePhoto(?string $mdPhoto): ?string
 	{
+		if (!$mdPhoto) {
+			return null;
+		}
+
 		$photo = preg_replace("/\!\[.*?]/", '', $mdPhoto);
 		preg_match("/\((?'url'.*?)\s+=.*\)/", $photo, $matches);
 
