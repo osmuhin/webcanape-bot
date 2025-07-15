@@ -39,8 +39,8 @@ return [
 		'org_id' => env('YANDEX_ORG_ID')
 	],
 
-	'telegram' => [
-		'bot_token' => env('TELEGRAM_BOT_TOKEN'),
-		'admin_user_id' => env('TELEGRAM_ADMIN_USER_ID')
+	'telegram-bot-api' => [
+		'token' => env('TELEGRAM_BOT_TOKEN'),
+		'admin_chat_id' => env('TELEGRAM_ADMIN_CHAT_ID')
 	]
 ];

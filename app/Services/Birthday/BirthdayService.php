@@ -3,15 +3,27 @@
 namespace App\Services\Birthday;
 
 use App\Models\User;
+use App\Notifications\BirthdayInAWeek;
+use App\Notifications\BirthdayToday;
+use App\Notifications\BirthdayTomorrow;
 use App\Services\Birthday\Contracts\DataProvider;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Notification;
 
 class BirthdayService
 {
-	private array $existingUserIds = [];
+	private array $syncedUserIds = [];
 
 	public function __construct(private DataProvider $provider)
 	{
 
+	}
+
+	public function notifyAboutUpcomingBirthdays()
+	{
+		$this->notifyAboutBirthday(now(), BirthdayToday::class);
+		$this->notifyAboutBirthday(now()->addDay(), BirthdayTomorrow::class);
+		$this->notifyAboutBirthday(now()->addWeek(), BirthdayInAWeek::class);
 	}
 
 	public function sync()
@@ -19,55 +31,23 @@ class BirthdayService
 		$users = collect($this->provider->getUsers());
 
 		foreach ($users as $user) {
-			$this->updateOrCreate($user);
+			$this->syncedUserIds[] = UserRepository::updateOrCreate($user);
 		}
 
-		User::query()->whereNotIn('id', $this->existingUserIds)->delete();
+		User::query()->whereNotIn('id', $this->syncedUserIds)->delete();
 	}
 
-	private function updateOrCreate(UserData $user)
+	private function notifyAboutBirthday(Carbon $targetDate, string $notification)
 	{
-		if ($dbUser = $this->fetchByChecksum($user->checksum())) {
-			$this->existingUserIds[] = $dbUser->id;
+		$users = UserRepository::fetchByDayMonth($targetDate);
 
-			return;
+		foreach ($users as $user) {
+			$recipients = User::query()
+				->whereNotNull('telegram_user_id')
+				->whereNot('id', $user->id)
+				->get();
+
+			Notification::send($recipients, new $notification($user));
 		}
-
-		$dbUser = $this->fetchByName($user->firstName, $user->lastName);
-		$dbUser ? $this->update($dbUser, $user) : $this->create($user);
-	}
-
-	private function update(User $dbUser, UserData $userData): void
-	{
-		$dbUser->fill($userData->toArray());
-		$dbUser->checksum = $userData->checksum();
-		$dbUser->save();
-
-		$this->existingUserIds[] = $dbUser->id;
-	}
-
-	private function create(UserData $userData): void
-	{
-		$dbUser = new User($userData->toArray());
-		$dbUser->checksum = $userData->checksum();
-		$dbUser->save();
-
-		$this->existingUserIds[] = $dbUser->id;
-	}
-
-	private function fetchByChecksum(string $checksum): ?User
-	{
-		return User::query()
-			->select('id')
-			->where('checksum', $checksum)
-			->first();
-	}
-
-	private function fetchByName(string $firstName, string $lastName): ?User
-	{
-		return User::query()
-			->where('first_name', $firstName)
-			->where('last_name', $lastName)
-			->first();
 	}
 }
