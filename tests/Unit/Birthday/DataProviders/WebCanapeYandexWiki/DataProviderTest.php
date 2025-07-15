@@ -61,7 +61,7 @@ class DataProviderTest extends TestCase
 			'first_name' => 'Иван',
 			'last_name' => 'Иванов',
 			'birthdate' => '2025-01-05',
-			'photo' => '![Иванов (Директор).png](/storage/ivanov.png =349x)',
+			'photo' => 'https://wiki.yandex.ru/storage/ivanov.png',
 			'post' => 'Директор'
 		], $ivanov->toArray());
 
@@ -69,7 +69,7 @@ class DataProviderTest extends TestCase
 			'first_name' => 'Василий',
 			'last_name' => 'Петров',
 			'birthdate' => '2025-09-30',
-			'photo' => '![Петров (Дизайнер).png](/storage/petrov.png =349x)',
+			'photo' => 'https://wiki.yandex.ru/storage/petrov.png',
 			'post' => 'Дизайнер'
 		], $petrov->toArray());
 	}
