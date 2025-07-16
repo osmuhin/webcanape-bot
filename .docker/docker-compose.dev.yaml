@@ -15,18 +15,19 @@ services:
         condition: service_healthy
 
   cron:
-    build: ./cron
-    working_dir: /app
-    user: $USER_ID:$GROUP_ID
+    build:
+      context: ./cron
+      args:
+        SCHEDULER_TOKEN: $SCHEDULER_TOKEN
     depends_on:
-      mariadb:
-        condition: service_healthy
+      - php
     volumes:
-      - ../:/app
       - ../.runtime/logs/cron:/var/log/cron
     command:
       - crond
       - "-f"
+      - "-L"
+      - "/dev/stdout"
 
   queue:
     build: ./queue

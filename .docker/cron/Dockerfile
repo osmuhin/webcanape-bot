@@ -1,9 +1,8 @@
-FROM php:8.4-alpine
+FROM alpine:latest
 
-ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+ARG SCHEDULER_TOKEN=''
 
-RUN apk add --no-cache tini busybox busybox-suid \
-	&& install-php-extensions redis pdo_mysql \
-	&& echo "* * * * * php -f /app/artisan schedule:run" >> /etc/crontabs/root
+RUN apk add --no-cache tini busybox busybox-suid curl \
+	&& printf '* * * * * curl --silent -H "Accept: application/json" "http://nginx:80/schedule-run?token=%s"' "$SCHEDULER_TOKEN" >> /etc/crontabs/root
 
 ENTRYPOINT ["/sbin/tini", "--"]
