@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $last_name
  * @property string $photo
  * @property string $post
- * @property string $birthdate
+ * @property \Carbon\Carbon $birthdate
  * @property string|null $telegram_user_id
  * @property string $joined_at
  */

@@ -11,11 +11,12 @@ class BirthdayDataProvider implements DataProviderContract
 	{
 		return [
 			$this->makeIvanov(),
-			$this->makePetrov()
+			$this->makePetrov(),
+			$this->makeSidorov()
 		];
 	}
 
-	private function makeIvanov(): UserData
+	public function makeIvanov(): UserData
 	{
 		$ivanov = new UserData();
 		$ivanov->firstName = 'Иван';
@@ -27,7 +28,7 @@ class BirthdayDataProvider implements DataProviderContract
 		return $ivanov;
 	}
 
-	private function makePetrov(): UserData
+	public function makePetrov(): UserData
 	{
 		$petrov = new UserData();
 		$petrov->firstName = 'Арсений';
@@ -35,6 +36,18 @@ class BirthdayDataProvider implements DataProviderContract
 		$petrov->birthdate = now()->setDate(2024, 9, 30);
 		$petrov->photo = '/storage/petrov.png';
 		$petrov->post = 'Дизайнер';
+
+		return $petrov;
+	}
+
+	public function makeSidorov(): UserData
+	{
+		$petrov = new UserData();
+		$petrov->firstName = 'Михаил';
+		$petrov->lastName = 'Сидоров';
+		$petrov->birthdate = now()->setDate(2024, 12, 31);
+		$petrov->photo = '/storage/sidorov.png';
+		$petrov->post = 'Уборщик';
 
 		return $petrov;
 	}
