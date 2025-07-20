@@ -27,7 +27,7 @@ class SyncUsersTest extends TestCase
 		$this->assertDatabaseHas('users', [
 			'first_name' => 'Иван',
 			'last_name' => 'Иванов',
-			'birthdate' => '20-05',
+			'birthdate' => '2025-05-20',
 			'photo' => '/storage/ivanov.png',
 			'post' => 'Директор'
 		]);
@@ -35,7 +35,7 @@ class SyncUsersTest extends TestCase
 		$this->assertDatabaseHas('users', [
 			'first_name' => 'Арсений',
 			'last_name' => 'Петров',
-			'birthdate' => '30-09',
+			'birthdate' => '2024-09-30',
 			'photo' => '/storage/petrov.png',
 			'post' => 'Дизайнер'
 		]);
@@ -43,7 +43,7 @@ class SyncUsersTest extends TestCase
 		$this->assertDatabaseHas('users', [
 			'first_name' => 'Михаил',
 			'last_name' => 'Сидоров',
-			'birthdate' => '31-12',
+			'birthdate' => '2024-12-31',
 			'photo' => '/storage/sidorov.png',
 			'post' => 'Уборщик'
 		]);

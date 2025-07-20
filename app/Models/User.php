@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Casts\AsBirthdate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $id
@@ -21,15 +21,18 @@ class User extends Model
 {
 	use HasFactory;
 
-	public $timestamps = false;
+	public const UPDATED_AT = null;
 
 	protected $fillable = ['first_name', 'last_name', 'photo', 'post', 'telegram_user_id', 'birthdate'];
 
 	protected $table = 'users';
 
 	protected $casts = [
-		'joined_at' => 'timestamp',
-		'birthdate' => AsBirthdate::class,
-		'telegram_allow_notifications' => 'bool'
+		'birthdate' => 'date'
 	];
+
+	public function telegramUser(): HasOne
+	{
+		return $this->hasOne(TelegramUser::class, 'user_id');
+	}
 }
