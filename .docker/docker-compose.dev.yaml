@@ -48,6 +48,7 @@ services:
   nginx:
     image: nginx:alpine
     volumes:
+      - ../:/app:ro
       - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
     working_dir: /app
     ports:
