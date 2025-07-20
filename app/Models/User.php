@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\AsBirthdate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,6 +28,6 @@ class User extends Model
 
 	protected $casts = [
 		'joined_at' => 'timestamp',
-		'birthdate' => 'date'
+		'birthdate' => AsBirthdate::class
 	];
 }
