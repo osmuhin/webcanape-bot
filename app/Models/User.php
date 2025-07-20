@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $post
  * @property \Carbon\Carbon $birthdate
  * @property string|null $telegram_user_id
+ * @property bool $telegram_allow_notifications
  * @property string $joined_at
  */
 class User extends Model
@@ -28,6 +29,7 @@ class User extends Model
 
 	protected $casts = [
 		'joined_at' => 'timestamp',
-		'birthdate' => AsBirthdate::class
+		'birthdate' => AsBirthdate::class,
+		'telegram_allow_notifications' => 'bool'
 	];
 }

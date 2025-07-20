@@ -19,7 +19,7 @@ return new class extends Migration
 			$table->string('post');
 			$table->string('birthdate', 5)->collation('ascii_bin')->index();
 			$table->string('telegram_user_id')->unique()->nullable();
-			$table->boolean('telegram_allow_notifications')->default(false);
+			$table->boolean('telegram_allow_notifications')->default(true);
 			$table->string('checksum', 32)->collation('ascii_bin')->index()->nullable();
 			$table->timestamp('joined_at')->nullable()->default(null);
 		});

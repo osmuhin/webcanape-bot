@@ -44,6 +44,7 @@ class BirthdayService
 		foreach ($users as $user) {
 			$recipients = User::query()
 				->whereNotNull('telegram_user_id')
+				->where('telegram_allow_notifications', true)
 				->whereNot('id', $user->id)
 				->get();
 

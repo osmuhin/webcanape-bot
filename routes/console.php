@@ -5,12 +5,12 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('sync-birthdays', function (BirthdayService $birthdayService) {
-   $birthdayService->sync();
+	dispatch(fn () => $birthdayService->sync());
 });
 
 Artisan::command('notify', function (BirthdayService $birthdayService) {
-   $birthdayService->notifyAboutUpcomingBirthdays();
+	$birthdayService->notifyAboutUpcomingBirthdays();
 });
 
-Schedule::command('sync-birthdays')->cron('0 2 * * 1-5'); // Every weekday at 2 a.m.
+Schedule::command('sync-birthdays')->dailyAt('01:20');
 Schedule::command('notify')->dailyAt('7:00');

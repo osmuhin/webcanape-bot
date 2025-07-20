@@ -77,7 +77,7 @@ class UserRepository
 	public static function fetchByDayMonth(Carbon $date)
 	{
 		return User::query()
-			->whereRaw("DATE_FORMAT(birthdate, '%m-%d') = ?", [$date->format('m-d')])
+			->where('birthdate', [$date->format('d-m')])
 			->get();
 	}
 }
