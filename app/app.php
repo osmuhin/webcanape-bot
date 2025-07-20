@@ -12,12 +12,13 @@ putenv('APP_EVENTS_CACHE='   . __DIR__ . '/../.runtime/cache/app/events.php');
 
 return Application::configure(basePath: dirname(__DIR__))
 	->withRouting(
-		commands: __DIR__.'/../routes/console.php',
+		commands: __DIR__ . '/../routes/console.php',
 		health: '/up',
 	)
 	->withProviders([
 		\App\Providers\AppServiceProvider::class,
-		\App\Providers\BirthdayServiceProvider::class
+		\App\Providers\BirthdayServiceProvider::class,
+		\App\Providers\TelegramServiceProvider::class
 	])
 	->withExceptions(function (Exceptions $exceptions) {
 		//

@@ -5,6 +5,7 @@
 	"license": "MIT",
 	"require": {
 		"php": "^8.2",
+		"irazasyed/telegram-bot-sdk": "*",
 		"laravel-notification-channels/telegram": "^6.0",
 		"laravel/framework": "^11.31",
 		"saloonphp/saloon": "^3.14"

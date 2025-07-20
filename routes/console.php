@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\Birthday\BirthdayService;
+use App\Services\Telegram\Telegram;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
@@ -10,6 +11,10 @@ Artisan::command('sync-birthdays', function (BirthdayService $birthdayService) {
 
 Artisan::command('notify', function (BirthdayService $birthdayService) {
 	$birthdayService->notifyAboutUpcomingBirthdays();
+});
+
+Artisan::command('setup-telegram-webhook', function (Telegram $telegram) {
+	$telegram->setupWebhook();
 });
 
 Schedule::command('sync-birthdays')->dailyAt('01:20');

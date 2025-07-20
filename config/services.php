@@ -39,8 +39,14 @@ return [
 		'org_id' => env('YANDEX_ORG_ID')
 	],
 
+	'telegram' => [
+		'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+		'admin_chat_id' => env('TELEGRAM_ADMIN_CHAT_ID'),
+		'webhook_url' => '/telegram/webhook',
+		'webhook_secret_token' => env('TELEGRAM_WEBHOOK_SECRET_TOKEN')
+	],
+
 	'telegram-bot-api' => [
-		'token' => env('TELEGRAM_BOT_TOKEN'),
-		'admin_chat_id' => env('TELEGRAM_ADMIN_CHAT_ID')
+		'token' => env('TELEGRAM_BOT_TOKEN')
 	]
 ];
