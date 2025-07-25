@@ -1,5 +1,5 @@
 # Only for development purposes
-name: webcanape-birthday
+name: webcanape-bot
 
 services:
   php:

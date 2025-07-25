@@ -14,7 +14,7 @@ class Telegram
 
 	private string $webhookUrl;
 
-	private string $webhookSecretToken;
+	private ?string $webhookSecretToken;
 
 	public function __construct(array $config)
 	{

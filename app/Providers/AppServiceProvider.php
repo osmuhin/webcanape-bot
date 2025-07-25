@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
 
 	protected function configureCronRoute()
 	{
-		if (!$schedulerToken = env('SCHEDULER_TOKEN')) {
+		if (!$schedulerToken = config('app.scheduler_token')) {
 			throw new RuntimeException('SCHEDULER_TOKEN environment variable is not set.');
 		}
 
