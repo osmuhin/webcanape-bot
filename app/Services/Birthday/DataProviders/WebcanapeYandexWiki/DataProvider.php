@@ -7,6 +7,7 @@ use App\Libs\YandexSdk\Wiki\MarkdownParser\MarkdownParser;
 use App\Libs\YandexSdk\Wiki\YandexWiki;
 use App\Services\Birthday\Contracts\DataProvider as DataProviderContract;
 use App\Services\Birthday\UserData;
+use Illuminate\Contracts\Config\Repository;
 
 class DataProvider implements DataProviderContract
 {
@@ -23,7 +24,23 @@ class DataProvider implements DataProviderContract
 		$this->staffDetailPages = $config['staff_detail_pages'];
 	}
 
-	public function setYandexWikiClient(YandexWiki $wiki)
+	public static function make(Repository $config): DataProviderContract
+	{
+		$provider = new self(
+			config: $config->get('birthday.webcanape-yandex-wiki')
+		);
+
+		$wiki = new YandexWiki(
+			token: $config->get('services.yandex.oauth_token'),
+			orgId: $config->get('services.yandex.org_id')
+		);
+
+		$provider->setYandexWikiClient($wiki);
+
+		return $provider;
+	}
+
+	public function setYandexWikiClient(YandexWiki $wiki): void
 	{
 		$this->wiki = $wiki;
 	}
@@ -39,6 +56,8 @@ class DataProvider implements DataProviderContract
 	/**
 	 * @param \App\Services\Birthday\DataProviders\WebcanapeYandexWiki\EmployeeData[] $employeeCollection
 	 * @param \App\Services\Birthday\DataProviders\WebcanapeYandexWiki\BirthdayData[] $birthdayCollection
+	 *
+	 * @return \App\Services\Birthday\UserData[]
 	 */
 	private function combine(array $employeeCollection, array $birthdayCollection): array
 	{
@@ -46,16 +65,12 @@ class DataProvider implements DataProviderContract
 
 		foreach ($employeeCollection as $employee) {
 			$user = new UserData();
-			$user->firstName = $employee->firstName;
-			$user->lastName = $employee->lastName;
+			$user->name = $employee->name;
 			$user->photo = $employee->photo;
 			$user->post = $employee->post;
 
 			foreach ($birthdayCollection as $birthday) {
-				if (
-					$birthday->firstName == $employee->firstName &&
-					$birthday->lastName == $employee->lastName
-				) {
+				if ($this->compare($birthday, $employee)) {
 					$user->birthdate = $birthday->birthdate;
 
 					break;
@@ -68,6 +83,12 @@ class DataProvider implements DataProviderContract
 		}
 
 		return $users;
+	}
+
+	private function compare(BirthdayData $birthday, EmployeeData $employee): bool
+	{
+		return $birthday->firstName == $employee->firstName &&
+			$birthday->lastName == $employee->lastName;
 	}
 
 	private function fetchTable(string $slug)

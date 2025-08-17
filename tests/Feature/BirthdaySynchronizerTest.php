@@ -4,46 +4,39 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Services\Birthday\BirthdayService;
-use App\Services\Birthday\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Fixtures\BirthdayDataProvider;
 use Tests\TestCase;
 
-use function PHPUnit\Framework\assertNotSame;
-use function PHPUnit\Framework\assertSame;
-
-class SyncUsersTest extends TestCase
+class BirthdaySynchronizerTest extends TestCase
 {
 	use RefreshDatabase;
 
 	public function test_create_users(): void
 	{
-		$service = new BirthdayService(new BirthdayDataProvider());
-		$service->sync();
+		$service = new BirthdayService();
+		$service->makeSynchronizer(new BirthdayDataProvider())->sync();
 
 		$this->assertDatabaseCount('users', 3);
 
 		$this->assertDatabaseHas('users', [
-			'first_name' => 'Иван',
-			'last_name' => 'Иванов',
-			'birthdate' => '20-05',
+			'name' => 'Иван Иванов',
+			'birthdate' => '2025-05-20',
 			'photo' => '/storage/ivanov.png',
 			'post' => 'Директор'
 		]);
 
 		$this->assertDatabaseHas('users', [
-			'first_name' => 'Арсений',
-			'last_name' => 'Петров',
-			'birthdate' => '30-09',
+			'name' => 'Арсений Петров',
+			'birthdate' => '2024-09-30',
 			'photo' => '/storage/petrov.png',
 			'post' => 'Дизайнер'
 		]);
 
 		$this->assertDatabaseHas('users', [
-			'first_name' => 'Михаил',
-			'last_name' => 'Сидоров',
-			'birthdate' => '31-12',
+			'name' => 'Михаил Сидоров',
+			'birthdate' => '2024-12-31',
 			'photo' => '/storage/sidorov.png',
 			'post' => 'Уборщик'
 		]);
@@ -53,8 +46,8 @@ class SyncUsersTest extends TestCase
 	{
 		$unidentified = User::factory()->create();
 
-		$service = new BirthdayService(new BirthdayDataProvider());
-		$service->sync();
+		$service = new BirthdayService();
+		$service->makeSynchronizer(new BirthdayDataProvider())->sync();
 
 		$this->assertDatabaseCount('users', 3);
 		$this->assertDatabaseMissing('users', ['id' => $unidentified->id]);
@@ -66,17 +59,16 @@ class SyncUsersTest extends TestCase
 		$ivanov = $dataProvider->makeIvanov();
 		$ivanov->birthdate = Carbon::createFromDate(month: 1, day: 15);
 
-		assertNotSame($ivanov->checksum(), $dataProvider->makeIvanov()->checksum());
+		User::create($ivanov->toArray());
 
-		UserRepository::create($ivanov);
-
-		$service = new BirthdayService($dataProvider);
-		$service->sync();
+		$service = new BirthdayService();
+		$service->makeSynchronizer(new BirthdayDataProvider())->sync();
 
 		$this->assertDatabaseCount('users', 3);
 
-		$updatedIvanov = UserRepository::fetchByName('Иван', 'Иванов');
-
-		assertSame('20-05', $updatedIvanov->birthdate->format('d-m'));
+		$this->assertDatabaseHas('users', [
+			'name' => 'Иван Иванов',
+			'birthdate' => now()->setDate(2025, 5, 20)->toDateString()
+		]);
 	}
 }

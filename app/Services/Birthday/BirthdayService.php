@@ -2,21 +2,31 @@
 
 namespace App\Services\Birthday;
 
+use App\Models\TelegramUser;
 use App\Models\User;
 use App\Notifications\BirthdayInAWeek;
 use App\Notifications\BirthdayToday;
 use App\Notifications\BirthdayTomorrow;
 use App\Services\Birthday\Contracts\DataProvider;
 use Carbon\Carbon;
+use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Notification;
+use InvalidArgumentException;
 
 class BirthdayService
 {
-	private array $syncedUserIds = [];
+	private array $dataProviders = [];
 
-	public function __construct(private DataProvider $provider)
+	public function enableDataProvider(string $name, string $dataProviderClass): void
 	{
+		$this->dataProviders[$name] = $dataProviderClass;
+	}
 
+	public function makeSynchronizer(DataProvider|string|null $provider = null): Synchronizer
+	{
+		return new Synchronizer(
+			$this->resolveDataProvider($provider)
+		);
 	}
 
 	public function notifyAboutUpcomingBirthdays()
@@ -26,26 +36,35 @@ class BirthdayService
 		$this->notifyAboutBirthday(now()->addWeek(), BirthdayInAWeek::class);
 	}
 
-	public function sync()
+	private function resolveDataProvider(DataProvider|string|null $provider): DataProvider
 	{
-		$users = collect($this->provider->getUsers());
-
-		foreach ($users as $user) {
-			$this->syncedUserIds[] = UserRepository::updateOrCreate($user);
+		if ($provider instanceof DataProvider) {
+			return $provider;
 		}
 
-		User::query()->whereNotIn('id', $this->syncedUserIds)->delete();
+		$config = Container::getInstance()->make('config');
+
+		if ($provider === null) {
+			$provider = $config->get('birthday.default_data_provider');
+		}
+
+		if (!isset($this->dataProviders[$provider])) {
+			throw new InvalidArgumentException("Birthday users data provider \"{$provider}\" not found.");
+		}
+
+		return $provider::make($config);
 	}
 
 	private function notifyAboutBirthday(Carbon $targetDate, string $notification)
 	{
-		$users = UserRepository::fetchByDayMonth($targetDate);
+		$users = User::query()
+			->whereRaw("DATE_FORMAT(birthdate, '%d-%m') = ?", [$targetDate->format('d-m')])
+			->get();
 
 		foreach ($users as $user) {
-			$recipients = User::query()
-				->whereNotNull('telegram_user_id')
-				->where('telegram_allow_notifications', true)
-				->whereNot('id', $user->id)
+			$recipients = TelegramUser::query()
+				->whereHas('user')
+				->where('blocked', false)
 				->get();
 
 			Notification::send($recipients, new $notification($user));

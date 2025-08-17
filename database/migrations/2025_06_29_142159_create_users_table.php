@@ -13,15 +13,22 @@ return new class extends Migration
 	{
 		Schema::create('users', function (Blueprint $table) {
 			$table->id();
-			$table->string('first_name');
-			$table->string('last_name');
+			$table->string('name')->unique();
 			$table->string('photo')->nullable();
 			$table->string('post');
-			$table->string('birthdate', 5)->collation('ascii_bin')->index();
-			$table->string('telegram_user_id')->unique()->nullable();
-			$table->boolean('telegram_allow_notifications')->default(true);
-			$table->string('checksum', 32)->collation('ascii_bin')->index()->nullable();
-			$table->timestamp('joined_at')->nullable()->default(null);
+			$table->date('birthdate')->index();
+			$table->timestamp('created_at')->useCurrent();
+		});
+
+		Schema::create('telegram_users', function (Blueprint $table) {
+			$table->id();
+			$table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+			$table->string('first_name');
+			$table->string('last_name');
+			$table->string('username')->unique();
+			$table->string('chat_id')->unique();
+			$table->boolean('blocked')->default(false);
+			$table->timestamp('created_at')->useCurrent();
 		});
 	}
 
@@ -30,6 +37,7 @@ return new class extends Migration
 	 */
 	public function down(): void
 	{
+		Schema::dropIfExists('telegram_users');
 		Schema::dropIfExists('users');
 	}
 };

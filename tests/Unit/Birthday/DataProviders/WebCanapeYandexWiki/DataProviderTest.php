@@ -58,16 +58,14 @@ class DataProviderTest extends TestCase
 		assertInstanceOf(UserData::class, $petrov);
 
 		assertSame([
-			'first_name' => 'Иван',
-			'last_name' => 'Иванов',
+			'name' => 'Иван Иванов',
 			'birthdate' => '2025-01-05',
 			'photo' => 'https://wiki.yandex.ru/storage/ivanov.png',
 			'post' => 'Директор'
 		], $ivanov->toArray());
 
 		assertSame([
-			'first_name' => 'Василий',
-			'last_name' => 'Петров',
+			'name' => 'Василий Петров',
 			'birthdate' => '2025-09-30',
 			'photo' => 'https://wiki.yandex.ru/storage/petrov.png',
 			'post' => 'Дизайнер'

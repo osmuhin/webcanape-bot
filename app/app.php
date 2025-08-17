@@ -12,7 +12,7 @@ putenv('APP_EVENTS_CACHE='   . __DIR__ . '/../.runtime/cache/app/events.php');
 
 return Application::configure(basePath: dirname(__DIR__))
 	->withRouting(
-		commands: __DIR__ . '/../routes/console.php',
+		commands: __DIR__ . '/console.php',
 		health: '/up',
 	)
 	->withProviders([

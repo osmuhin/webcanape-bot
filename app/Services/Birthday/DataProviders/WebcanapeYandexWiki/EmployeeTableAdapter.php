@@ -35,7 +35,7 @@ class EmployeeTableAdapter extends AbstractTableAdapter
 	protected function getMapHeaderColumns(): array
 	{
 		return [
-			'ФИО' => 'fullName',
+			'ФИО' => 'name',
 			'Должность' => 'post',
 			'Фото' => 'photo',
 		];
@@ -44,13 +44,14 @@ class EmployeeTableAdapter extends AbstractTableAdapter
 	private function makeDto(array $row): EmployeeData
 	{
 		$dto = new EmployeeData();
+		$dto->name = $this->getCell($row, 'name');
 		$dto->post = $this->getCell($row, 'post');
 		$dto->photo = $this->normalizePhoto(
 			$this->getCell($row, 'photo')
 		);
 
 		[$dto->firstName, $dto->lastName] = $this->splitFullName(
-			$this->getCell($row, 'fullName')
+			$this->getCell($row, 'name')
 		);
 
 		return $dto;

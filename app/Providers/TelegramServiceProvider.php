@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\Telegram\Telegram;
+use App\Services\Telegram\WebhookMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,6 @@ class TelegramServiceProvider extends ServiceProvider
 	{
 		Route::get($telegram->getWebhookUrl(), function (Request $request) {
 
-		})->middleware();
+		})->middleware(WebhookMiddleware::class);
 	}
 }
