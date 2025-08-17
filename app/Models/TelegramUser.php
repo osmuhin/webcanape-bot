@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Database\Factories\TelegramUserFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -17,14 +19,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class TelegramUser extends Model
 {
+	use HasFactory;
+
 	public const UPDATED_AT = null;
+
+	protected static string $factory = TelegramUserFactory::class;
 
 	protected $guarded = ['id', 'created_at', 'user_id'];
 
 	protected $table = 'telegram_users';
 
 	protected $casts = [
-		'birthdate' => 'date'
+		'birthdate' => 'date',
+		'blocked' => 'bool'
 	];
 
 	public function user(): BelongsTo

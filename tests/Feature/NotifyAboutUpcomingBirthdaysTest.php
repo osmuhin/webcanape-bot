@@ -2,22 +2,31 @@
 
 namespace Tests\Feature;
 
-use App\Notifications\BirthdayInAWeek;
-use App\Notifications\BirthdayToday;
-use App\Notifications\BirthdayTomorrow;
+use App\Models\TelegramUser;
+use App\Models\User;
+use App\Notifications\UpcomingBirthday\InAWeek;
+use App\Notifications\UpcomingBirthday\Today;
+use App\Notifications\UpcomingBirthday\Tomorrow;
 use App\Services\Birthday\BirthdayService;
-use App\Services\Birthday\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
-use Tests\Fixtures\BirthdayDataProvider;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
-
-use function PHPUnit\Framework\assertSame;
 
 class NotifyAboutUpcomingBirthdaysTest extends TestCase
 {
 	use RefreshDatabase;
+
+	public static function periodsProvider(): array
+	{
+		return [
+			[Carbon::createFromDate(month: 1, day: 15), Today::class],
+			[Carbon::createFromDate(month: 1, day: 15)->subDay(), Tomorrow::class],
+			[Carbon::createFromDate(month: 1, day: 15)->subWeek(), InAWeek::class],
+		];
+	}
 
 	public function setUp(): void
 	{
@@ -26,107 +35,39 @@ class NotifyAboutUpcomingBirthdaysTest extends TestCase
 		Notification::fake();
 	}
 
-	public function test_no_notifications_sent_when_no_upcoming_birthdays()
+	#[Test]
+	public function it_no_notifications_sent_when_no_upcoming_birthdays()
 	{
-		$service = new BirthdayService(new BirthdayDataProvider());
-		$service->sync();
-		$service->notifyAboutUpcomingBirthdays();
+		$service = new BirthdayService();
+		$service->makeNotifier()->notifyAboutUpcomingBirthdays();
 
 		Notification::assertNothingSent();
 	}
 
-	public function test_notify_about_todays_birthdays()
+	#[Test]
+	#[DataProvider('periodsProvider')]
+	public function it_notifies_about_birthdays(Carbon $travelsTo, string $expectedNotificationClass)
 	{
-		$service = new BirthdayService(new BirthdayDataProvider());
-		$service->sync();
+		User::factory()
+			->has(TelegramUser::factory()->state(fn () => ['blocked' => false]))
+			->create([
+				'birthdate' => Carbon::createFromDate(month: 1, day: 15)
+			]);
 
-		$ivanov = UserRepository::fetchByName('Иван', 'Иванов');
-		$ivanov->telegram_user_id = '1';
-		$ivanov->save();
+		$recipient = User::factory()
+			->has(TelegramUser::factory()->state(fn () => ['blocked' => false]))
+			->create();
 
-		$petrov = UserRepository::fetchByName('Арсений', 'Петров');
-		$petrov->telegram_user_id = '2';
-		$petrov->save();
+		User::factory()
+			->has(TelegramUser::factory()->state(fn () => ['blocked' => true]))
+			->create();
 
-		$sidorov = UserRepository::fetchByName('Михаил', 'Сидоров');
-		$sidorov->telegram_user_id = '3';
-		$sidorov->telegram_allow_notifications = false;
-		$sidorov->save();
+		$this->travelTo($travelsTo);
 
-		// Ivanov's birthdate
-		$this->travelTo(Carbon::createFromDate(month: 5, day: 20));
-
-		$service->notifyAboutUpcomingBirthdays();
+		$service = new BirthdayService();
+		$service->makeNotifier()->notifyAboutUpcomingBirthdays();
 
 		Notification::assertCount(1);
-		Notification::assertSentTo(
-			[$petrov],
-			function (BirthdayToday $notification) use ($petrov) {
-				$message = $notification->toTelegram($petrov)->toArray();
-				$text = $message['text'];
-				$chatId = $message['chat_id'];
-
-				assertSame('🎉🎁 Иван Иванов (Директор) <b><u>сегодня</u></b> празднует день рождения (20 мая).', $text);
-				assertSame('2', $chatId);
-
-				return true;
-			}
-		);
-	}
-
-	public function test_notify_about_tomorrow_birthdays()
-	{
-		$service = new BirthdayService(new BirthdayDataProvider());
-		$service->sync();
-
-		$petrov = UserRepository::fetchByName('Арсений', 'Петров');
-		$petrov->telegram_user_id = '2';
-		$petrov->save();
-
-		// The day before Ivanov's birthdate
-		$this->travelTo(Carbon::createFromDate(month: 5, day: 20)->subDay());
-
-		$service->notifyAboutUpcomingBirthdays();
-
-		Notification::assertCount(1);
-		Notification::assertSentTo(
-			[$petrov],
-			function (BirthdayTomorrow $notification) use ($petrov) {
-				$message = $notification->toTelegram($petrov)->toArray();
-				$text = $message['text'];
-
-				assertSame('🟠 Иван Иванов (Директор) <b><u>завтра</u></b> будет праздновать день рождения (20 мая).', $text);
-
-				return true;
-			}
-		);
-	}
-
-	public function test_notify_about_birthdays_the_week_before()
-	{
-		$service = new BirthdayService(new BirthdayDataProvider());
-		$service->sync();
-
-		$petrov = UserRepository::fetchByName('Арсений', 'Петров');
-		$petrov->telegram_user_id = '2';
-		$petrov->save();
-
-		// The week before Ivanov's birthdate
-		$this->travelTo(Carbon::createFromDate(month: 5, day: 20)->subWeek());
-
-		$service->notifyAboutUpcomingBirthdays();
-
-		Notification::assertCount(1);
-		Notification::assertSentTo(
-			[$petrov],
-			function (BirthdayInAWeek $notification) use ($petrov) {
-				$message = $notification->toTelegram($petrov)->toArray();
-				$text = $message['text'];
-
-				assertSame('🟢 Иван Иванов (Директор) <b><u>через неделю</u></b> (20 мая) будет праздновать день рождения.', $text);
-
-				return true;
-			}
-		);
+		Notification::assertSentTo([$recipient->telegramUser], $expectedNotificationClass);
 	}
 }

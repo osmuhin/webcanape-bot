@@ -29,11 +29,9 @@ class BirthdayService
 		);
 	}
 
-	public function notifyAboutUpcomingBirthdays()
+	public function makeNotifier(): Notifier
 	{
-		$this->notifyAboutBirthday(now(), BirthdayToday::class);
-		$this->notifyAboutBirthday(now()->addDay(), BirthdayTomorrow::class);
-		$this->notifyAboutBirthday(now()->addWeek(), BirthdayInAWeek::class);
+		return new Notifier();
 	}
 
 	private function resolveDataProvider(DataProvider|string|null $provider): DataProvider
@@ -53,21 +51,5 @@ class BirthdayService
 		}
 
 		return $provider::make($config);
-	}
-
-	private function notifyAboutBirthday(Carbon $targetDate, string $notification)
-	{
-		$users = User::query()
-			->whereRaw("DATE_FORMAT(birthdate, '%d-%m') = ?", [$targetDate->format('d-m')])
-			->get();
-
-		foreach ($users as $user) {
-			$recipients = TelegramUser::query()
-				->whereHas('user')
-				->where('blocked', false)
-				->get();
-
-			Notification::send($recipients, new $notification($user));
-		}
 	}
 }

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\UpcomingBirthday;
 
+use App\Models\TelegramUser;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -11,7 +12,7 @@ use NotificationChannels\Telegram\Enums\ParseMode;
 use NotificationChannels\Telegram\TelegramFile;
 use NotificationChannels\Telegram\TelegramMessage;
 
-class BirthdayToday extends Notification implements ShouldQueue
+class Today extends Notification implements ShouldQueue
 {
 	use Queueable;
 
@@ -20,12 +21,12 @@ class BirthdayToday extends Notification implements ShouldQueue
 		//
 	}
 
-	public function via(object $notifiable): array
+	public function via(): array
 	{
 		return ['telegram'];
 	}
 
-	public function toTelegram(User $notifiable)
+	public function toTelegram(TelegramUser $recipient): TelegramMessage
 	{
 		// if ($this->bdayPerson->photo) {
 			// $message = TelegramFile::create();
@@ -36,10 +37,10 @@ class BirthdayToday extends Notification implements ShouldQueue
 
 		$date = Carbon::parse($this->bdayPerson->birthdate)->translatedFormat('d F');
 
-		$message->sendWhen((bool) $notifiable->telegram_user_id)
+		$message->sendWhen(!$recipient->blocked)
 			->parseMode(ParseMode::HTML)
-			->to($notifiable->telegram_user_id)
-			->content("🎉🎁 {$this->bdayPerson->first_name} {$this->bdayPerson->last_name} ({$this->bdayPerson->post}) <b><u>сегодня</u></b> празднует день рождения ({$date}).");
+			->to($recipient->chat_id)
+			->content("🎉🎁 {$this->bdayPerson->name} ({$this->bdayPerson->post}) <b><u>сегодня</u></b> празднует день рождения ({$date}).");
 
 		return $message;
 	}
