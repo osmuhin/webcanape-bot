@@ -13,12 +13,10 @@ return new class extends Migration
 	{
 		Schema::create('users', function (Blueprint $table) {
 			$table->id();
-			$table->string('first_name');
-			$table->string('last_name');
+			$table->string('name')->unique();
 			$table->string('photo')->nullable();
 			$table->string('post');
 			$table->date('birthdate')->index();
-			$table->string('checksum', 32)->collation('ascii_bin')->index();
 			$table->timestamp('created_at')->useCurrent();
 		});
 

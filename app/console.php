@@ -6,16 +6,16 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('sync-birthdays', function (BirthdayService $birthdayService) {
-	dispatch(fn () => $birthdayService->sync());
+	dispatch(fn () => $birthdayService->makeSynchronizer()->sync());
 });
 
 Artisan::command('notify', function (BirthdayService $birthdayService) {
-	$birthdayService->notifyAboutUpcomingBirthdays();
+	$birthdayService->makeNotifier()->notifyAboutUpcomingBirthdays();
 });
 
 Artisan::command('setup-telegram-webhook', function (Telegram $telegram) {
 	$telegram->setupWebhook();
 });
 
-Schedule::command('sync-birthdays')->dailyAt('01:20');
-Schedule::command('notify')->dailyAt('7:00');
+// Schedule::command('sync-birthdays')->dailyAt('01:20');
+// Schedule::command('notify')->dailyAt('7:00');

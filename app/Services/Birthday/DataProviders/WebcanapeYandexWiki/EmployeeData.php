@@ -4,6 +4,8 @@ namespace App\Services\Birthday\DataProviders\WebcanapeYandexWiki;
 
 class EmployeeData
 {
+	public string $name;
+
 	public string $firstName;
 
 	public string $lastName;

@@ -2,20 +2,19 @@
 
 namespace App\Models;
 
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $id
- * @property string $first_name
- * @property string $last_name
+ * @property string $name
  * @property string $photo
  * @property string $post
  * @property \Carbon\Carbon $birthdate
- * @property string|null $telegram_user_id
- * @property bool $telegram_allow_notifications
- * @property string $joined_at
+ * @property string $checksum
+ * @property \Carbon\Carbon $created_at
  */
 class User extends Model
 {
@@ -23,7 +22,9 @@ class User extends Model
 
 	public const UPDATED_AT = null;
 
-	protected $fillable = ['first_name', 'last_name', 'photo', 'post', 'telegram_user_id', 'birthdate'];
+	protected static string $factory = UserFactory::class;
+
+	protected $guarded = ['id', 'created_at'];
 
 	protected $table = 'users';
 

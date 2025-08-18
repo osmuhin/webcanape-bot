@@ -2,8 +2,7 @@
 
 namespace App\Services\Birthday\DataProviders\WebcanapeYandexWiki;
 
-use App\Services\Birthday\DataProviders\WebcanapeYandexWiki\Exceptions\MonthNotFoundException;
-use Carbon\Carbon;
+use InvalidArgumentException;
 
 class BirthdayTableAdapter extends AbstractTableAdapter
 {
@@ -28,24 +27,27 @@ class BirthdayTableAdapter extends AbstractTableAdapter
 	{
 		return [
 			'Дата' => 'birthdate',
-			'ФИО' => 'fullName'
+			'ФИО' => 'name'
 		];
 	}
 
 	private function makeDto(array $row): BirthdayData
 	{
 		$dto = new BirthdayData();
+		$dto->name = $this->getCell($row, 'name');
 		$dto->birthdate = $this->castDate(
 			$this->getCell($row, 'birthdate')
 		);
-
 		[$dto->firstName, $dto->lastName] = $this->splitFullName(
-			$this->getCell($row, 'fullName')
+			$this->getCell($row, 'name')
 		);
 
 		return $dto;
 	}
 
+	/**
+	 * @throws \InvalidArgumentException
+	 */
 	private function castDate(string $date)
 	{
 		$monthes = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
@@ -53,7 +55,7 @@ class BirthdayTableAdapter extends AbstractTableAdapter
 		$monthIdx = array_search($month, $monthes);
 
 		if ($monthIdx === false) {
-			throw new MonthNotFoundException($month);
+			throw new InvalidArgumentException("Month '{$month}' not found");
 		}
 
 		return now()->setDate(date('Y'), $monthIdx + 1, $day);

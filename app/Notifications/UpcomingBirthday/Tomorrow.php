@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications\UpcomingBirthday;
 
+use App\Models\TelegramUser;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -10,7 +11,7 @@ use Illuminate\Notifications\Notification;
 use NotificationChannels\Telegram\Enums\ParseMode;
 use NotificationChannels\Telegram\TelegramMessage;
 
-class BirthdayInAWeek extends Notification implements ShouldQueue
+class Tomorrow extends Notification implements ShouldQueue
 {
 	use Queueable;
 
@@ -19,21 +20,21 @@ class BirthdayInAWeek extends Notification implements ShouldQueue
 		//
 	}
 
-	public function via(object $notifiable): array
+	public function via(): array
 	{
 		return ['telegram'];
 	}
 
-	public function toTelegram(User $notifiable)
+	public function toTelegram(TelegramUser $recipient)
 	{
 		$message = TelegramMessage::create();
 
 		$date = Carbon::parse($this->bdayPerson->birthdate)->translatedFormat('d F');
 
-		$message->sendWhen((bool) $notifiable->telegram_user_id)
+		$message->sendWhen(!$recipient->blocked)
 			->parseMode(ParseMode::HTML)
-			->to($notifiable->telegram_user_id)
-			->content("🟢 {$this->bdayPerson->first_name} {$this->bdayPerson->last_name} ({$this->bdayPerson->post}) <b><u>через неделю</u></b> ({$date}) будет праздновать день рождения.");
+			->to($recipient->chat_id)
+			->content("🟠 {$this->bdayPerson->name} ({$this->bdayPerson->post}) <b><u>завтра</u></b> будет праздновать день рождения ({$date}).");
 
 		return $message;
 	}

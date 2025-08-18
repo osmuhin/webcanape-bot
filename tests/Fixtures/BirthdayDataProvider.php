@@ -4,9 +4,15 @@ namespace Tests\Fixtures;
 
 use App\Services\Birthday\Contracts\DataProvider as DataProviderContract;
 use App\Services\Birthday\UserData;
+use Illuminate\Contracts\Config\Repository;
 
 class BirthdayDataProvider implements DataProviderContract
 {
+	public static function make(Repository $_): self
+	{
+		return new self();
+	}
+
 	public function getUsers(): array
 	{
 		return [
@@ -19,8 +25,7 @@ class BirthdayDataProvider implements DataProviderContract
 	public function makeIvanov(): UserData
 	{
 		$ivanov = new UserData();
-		$ivanov->firstName = 'Иван';
-		$ivanov->lastName = 'Иванов';
+		$ivanov->name = 'Иван Иванов';
 		$ivanov->birthdate = now()->setDate(2025, 5, 20);
 		$ivanov->photo = '/storage/ivanov.png';
 		$ivanov->post = 'Директор';
@@ -31,8 +36,7 @@ class BirthdayDataProvider implements DataProviderContract
 	public function makePetrov(): UserData
 	{
 		$petrov = new UserData();
-		$petrov->firstName = 'Арсений';
-		$petrov->lastName = 'Петров';
+		$petrov->name = 'Арсений Петров';
 		$petrov->birthdate = now()->setDate(2024, 9, 30);
 		$petrov->photo = '/storage/petrov.png';
 		$petrov->post = 'Дизайнер';
@@ -43,8 +47,7 @@ class BirthdayDataProvider implements DataProviderContract
 	public function makeSidorov(): UserData
 	{
 		$petrov = new UserData();
-		$petrov->firstName = 'Михаил';
-		$petrov->lastName = 'Сидоров';
+		$petrov->name = 'Михаил Сидоров';
 		$petrov->birthdate = now()->setDate(2024, 12, 31);
 		$petrov->photo = '/storage/sidorov.png';
 		$petrov->post = 'Уборщик';
