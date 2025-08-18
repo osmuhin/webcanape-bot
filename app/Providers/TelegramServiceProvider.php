@@ -17,7 +17,7 @@ class TelegramServiceProvider extends ServiceProvider
 			$sdk = $service->getSdk();
 
 			$sdk->addCommands([
-				$command
+				// $command
 			]);
 
 			return $service;
