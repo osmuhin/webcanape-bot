@@ -46,4 +46,9 @@ class Telegram
 	{
 		return $this->webhookSecretToken;
 	}
+
+	public function getSdk(): TelegramApi
+	{
+		return $this->sdk;
+	}
 }

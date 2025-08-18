@@ -10,7 +10,7 @@ Artisan::command('sync-birthdays', function (BirthdayService $birthdayService) {
 });
 
 Artisan::command('notify', function (BirthdayService $birthdayService) {
-	$birthdayService->notifyAboutUpcomingBirthdays();
+	$birthdayService->makeNotifier()->notifyAboutUpcomingBirthdays();
 });
 
 Artisan::command('setup-telegram-webhook', function (Telegram $telegram) {

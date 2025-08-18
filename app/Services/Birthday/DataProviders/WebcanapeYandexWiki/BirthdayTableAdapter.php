@@ -45,6 +45,9 @@ class BirthdayTableAdapter extends AbstractTableAdapter
 		return $dto;
 	}
 
+	/**
+	 * @throws \InvalidArgumentException
+	 */
 	private function castDate(string $date)
 	{
 		$monthes = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];

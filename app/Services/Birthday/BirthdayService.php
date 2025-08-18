@@ -2,15 +2,8 @@
 
 namespace App\Services\Birthday;
 
-use App\Models\TelegramUser;
-use App\Models\User;
-use App\Notifications\BirthdayInAWeek;
-use App\Notifications\BirthdayToday;
-use App\Notifications\BirthdayTomorrow;
 use App\Services\Birthday\Contracts\DataProvider;
-use Carbon\Carbon;
 use Illuminate\Container\Container;
-use Illuminate\Support\Facades\Notification;
 use InvalidArgumentException;
 
 class BirthdayService
@@ -34,6 +27,9 @@ class BirthdayService
 		return new Notifier();
 	}
 
+	/**
+	 * @throws \InvalidArgumentException
+	 */
 	private function resolveDataProvider(DataProvider|string|null $provider): DataProvider
 	{
 		if ($provider instanceof DataProvider) {

@@ -26,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
 		$this->configureCronRoute();
 	}
 
+	/**
+	 * @throws \RuntimeException
+	 */
 	protected function configureCronRoute()
 	{
 		if (!$schedulerToken = env('SCHEDULER_TOKEN')) {
