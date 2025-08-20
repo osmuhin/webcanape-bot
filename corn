@@ -102,8 +102,8 @@ case $command in
 		payload="$(runOrExec nodejs) nodejs npx $@" ;;
 	"nuxi")
 		payload="$(runOrExec nodejs) nodejs npx nuxi $@" ;;
-	"ngrok")
-		payload="run ngrok http host.docker.internal:80 --region=eu" ;;
+	"tuna")
+		payload="run tuna" ;;
 	*)
 		payload="${command} $@" ;;
 esac

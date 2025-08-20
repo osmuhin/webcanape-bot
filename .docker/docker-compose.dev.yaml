@@ -86,3 +86,14 @@ services:
         condition: service_healthy
     volumes:
       - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php:ro
+
+  tuna:
+    image: yuccastream/tuna:latest
+    command:
+      - http
+      - nginx:80
+    profiles: ["debug"]
+    depends_on:
+      - nginx
+    environment:
+      TUNA_TOKEN: ${TUNA_TOKEN}

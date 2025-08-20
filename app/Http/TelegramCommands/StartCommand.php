@@ -14,9 +14,9 @@ class StartCommand extends Command
 
 		$this->replyWithMessage([
 			'text' => <<<GREATING
-Здарова, ёба!
-Если ты сотрудник webcanape.ru, то базарь свое имя и фамилию _(типа "Иван Иванов")_.
-Если испытываешь с этим затруднения, то чекни сотрудников на странице [wiki](https://wiki.yandex.ru/spisok-i-kontaktnye-dannye-sotrudnikov/).
+Здарова, ёба\!
+Если ты сотрудник webcanape\.ru, то скидывай свое имя и фамилию _\(типа "Иван Иванов"\)_\.
+Если испытываешь с этим затруднения, то чекни сотрудников на странице [wiki](https://wiki.yandex.ru/spisok-i-kontaktnye-dannye-sotrudnikov/)\.
 GREATING,
 			'parse_mode' => 'MarkdownV2'
 		]);

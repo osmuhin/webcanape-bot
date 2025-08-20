@@ -13,8 +13,16 @@ Artisan::command('notify', function (BirthdayService $birthdayService) {
 	$birthdayService->makeNotifier()->notifyAboutUpcomingBirthdays();
 });
 
-Artisan::command('setup-telegram-webhook', function (Telegram $telegram) {
+Artisan::command('tg:webhook:setup', function (Telegram $telegram) {
 	$telegram->setupWebhook();
+
+	$this->info("Setup telegram webhook was set on URL {$telegram->getWebhookUrl(abs: true)}");
+});
+
+Artisan::command('tg:webhook:delete', function (Telegram $telegram) {
+	$telegram->getSdk()->deleteWebhook();
+
+	$this->info("Setup telegram webhook was deleted successfuly");
 });
 
 // Schedule::command('sync-birthdays')->dailyAt('01:20');

@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Http\TelegramCommands\StartCommand;
 use App\Services\Telegram\Telegram;
 use App\Services\Telegram\WebhookMiddleware;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -17,7 +20,7 @@ class TelegramServiceProvider extends ServiceProvider
 			$sdk = $service->getSdk();
 
 			$sdk->addCommands([
-				// $command
+				StartCommand::class
 			]);
 
 			return $service;
@@ -26,7 +29,9 @@ class TelegramServiceProvider extends ServiceProvider
 
 	public function boot(Telegram $telegram): void
 	{
-		Route::get($telegram->getWebhookUrl(), function () use ($telegram) {
+		Route::post($telegram->getWebhookUrl(), function () use ($telegram) {
+			Log::debug('TG webhook: ', [Request::all()]);
+
 			$telegram->getSdk()->commandsHandler(webhook: true);
 		})->middleware(WebhookMiddleware::class);
 	}

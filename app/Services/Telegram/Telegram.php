@@ -12,6 +12,8 @@ class Telegram
 
 	private string $adminChatId;
 
+	private string $webhookBaseUrl;
+
 	private string $webhookUrl;
 
 	private ?string $webhookSecretToken;
@@ -19,16 +21,16 @@ class Telegram
 	public function __construct(array $config)
 	{
 		$this->sdk = new TelegramApi($config['bot_token']);
-		$this->adminChatId = $config['admin_chat_id'];
-		$this->webhookUrl = $config['webhook_url'];
+
+		$this->adminChatId =        $config['admin_chat_id'];
+		$this->webhookBaseUrl =     $config['webhook_base_url'];
+		$this->webhookUrl =         $config['webhook_url'];
 		$this->webhookSecretToken = $config['webhook_secret_token'];
 	}
 
-	public function setupWebhook(?string $baseUrl = null)
+	public function setupWebhook()
 	{
-		$baseUrl ??= config('app.url');
-
-		$params = ['url' => join_paths($baseUrl, $this->webhookUrl)];
+		$params = ['url' => $this->getWebhookUrl(abs: true)];
 
 		if ($token = $this->webhookSecretToken) {
 			$params['secret_token'] = $token;
@@ -37,9 +39,9 @@ class Telegram
 		$this->sdk->setWebhook($params);
 	}
 
-	public function getWebhookUrl(): string
+	public function getWebhookUrl(bool $abs = false): string
 	{
-		return $this->webhookUrl;
+		return $abs ? join_paths($this->webhookBaseUrl, $this->webhookUrl) : $this->webhookUrl;
 	}
 
 	public function getWebhookSecretToken(): string
