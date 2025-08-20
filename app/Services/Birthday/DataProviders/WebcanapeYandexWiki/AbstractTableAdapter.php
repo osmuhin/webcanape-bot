@@ -31,20 +31,6 @@ abstract class AbstractTableAdapter
 		return $value === '' ? null : $value;
 	}
 
-	protected function splitFullName(string $fullName): array
-	{
-		$exploded = explode(' ', $fullName, 2);
-
-		$firstName = $exploded[0];
-		$lastName = '';
-
-		if (isset($exploded[1])) {
-			$lastName = explode(' ', $exploded[1])[0];
-		}
-
-		return [$firstName, $lastName];
-	}
-
 	protected function defineColumnOrder(array $headRow): void
 	{
 		$mapHeaderColumns = $this->getMapHeaderColumns();

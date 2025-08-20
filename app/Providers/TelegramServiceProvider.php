@@ -6,8 +6,6 @@ use App\Http\TelegramCommands\StartCommand;
 use App\Services\Telegram\Telegram;
 use App\Services\Telegram\WebhookMiddleware;
 use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,9 +28,11 @@ class TelegramServiceProvider extends ServiceProvider
 	public function boot(Telegram $telegram): void
 	{
 		Route::post($telegram->getWebhookUrl(), function () use ($telegram) {
-			Log::debug('TG webhook: ', [Request::all()]);
+			$update = $telegram->getSdk()->commandsHandler(webhook: true);
 
-			$telegram->getSdk()->commandsHandler(webhook: true);
+			if ($update->isType('message')) {
+				$telegram->handleMessageUpdate($update);
+			}
 		})->middleware(WebhookMiddleware::class);
 	}
 }

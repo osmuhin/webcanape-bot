@@ -13,7 +13,10 @@ use Illuminate\Support\Facades\Queue;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
+use Telegram\Bot\Api as TelegramApi;
 use Tests\TestCase;
+
+use function PHPUnit\Framework\assertSame;
 
 class ConsoleTest extends TestCase
 {
@@ -68,9 +71,32 @@ class ConsoleTest extends TestCase
 			Telegram::class,
 			Mockery::mock(Telegram::class, function (MockInterface $mock) {
 				$mock->expects('setupWebhook')->once();
+				$mock->allows('getWebhookUrl')->andReturn('http://test/webhook');
 			})
 		);
 
-		Artisan::call('setup-telegram-webhook');
+		Artisan::call('tg:webhook:setup');
+
+		assertSame(
+			"Setup telegram webhook was set on URL http://test/webhook\n",
+			Artisan::output()
+		);
+	}
+
+	#[Test]
+	public function it_calls_delete_telegram_webhook_command(): void
+	{
+		$this->instance(
+			Telegram::class,
+			Mockery::mock(Telegram::class, function (MockInterface $mock) {
+				$sdk = Mockery::mock(TelegramApi::class, function (MockInterface $mock) {
+					$mock->expects('deleteWebhook')->once();
+				});
+
+				$mock->expects('getSdk')->once()->andReturn($sdk);
+			})
+		);
+
+		Artisan::call('tg:webhook:delete');
 	}
 }

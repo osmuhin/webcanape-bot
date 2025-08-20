@@ -50,7 +50,7 @@ class EmployeeTableAdapter extends AbstractTableAdapter
 			$this->getCell($row, 'photo')
 		);
 
-		[$dto->firstName, $dto->lastName] = $this->splitFullName(
+		[$dto->firstName, $dto->lastName] = split_full_name(
 			$this->getCell($row, 'name')
 		);
 

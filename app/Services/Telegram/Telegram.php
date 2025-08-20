@@ -2,7 +2,9 @@
 
 namespace App\Services\Telegram;
 
+use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api as TelegramApi;
+use Telegram\Bot\Objects\Update;
 
 use function Illuminate\Filesystem\join_paths;
 
@@ -52,5 +54,10 @@ class Telegram
 	public function getSdk(): TelegramApi
 	{
 		return $this->sdk;
+	}
+
+	public function handleMessageUpdate(Update $update): void
+	{
+		Log::debug('Message update', [$update->getMessage()->text]);
 	}
 }
