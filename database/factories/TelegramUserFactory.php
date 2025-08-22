@@ -20,7 +20,7 @@ class TelegramUserFactory extends Factory
 			'first_name' => fake()->firstName(),
 			'last_name' => fake()->lastName(),
 			'username' => fake()->userName(),
-			'chat_id' => fake()->randomNumber(),
+			'chat_id' => fake()->unique()->randomNumber(),
 			'blocked' => fake()->boolean()
 		];
 	}

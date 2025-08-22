@@ -78,7 +78,7 @@ class ConsoleTest extends TestCase
 		Artisan::call('tg:webhook:setup');
 
 		assertSame(
-			"Setup telegram webhook was set on URL http://test/webhook\n",
+			"Telegram webhook is set on URL http://test/webhook\n",
 			Artisan::output()
 		);
 	}

@@ -15,9 +15,8 @@ class TelegramServiceProvider extends ServiceProvider
 	{
 		$this->app->singleton(Telegram::class, function (Application $app) {
 			$service = new Telegram($app->get('config')->get('services.telegram'));
-			$sdk = $service->getSdk();
 
-			$sdk->addCommands([
+			$service->getSdk()->addCommands([
 				StartCommand::class
 			]);
 
@@ -27,7 +26,8 @@ class TelegramServiceProvider extends ServiceProvider
 
 	public function boot(Telegram $telegram): void
 	{
-		Route::post($telegram->getWebhookUrl(), function () use ($telegram) {
+		Route::post($telegram->getWebhookUrl(), function () {
+			$telegram = app(Telegram::class);
 			$update = $telegram->getSdk()->commandsHandler(webhook: true);
 
 			if ($update->isType('message')) {

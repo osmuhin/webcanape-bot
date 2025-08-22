@@ -12,22 +12,20 @@ class StartCommand extends Command
 
 	public function handle(): void
 	{
-		$chat = $this->update->getChat();
+		$chat = $this->getUpdate()->getChat();
 
 		$tgUser = TelegramUser::query()
 			->where('chat_id', $chat->id)
 			->firstOr(fn () => $this->createTgUser($chat));
 
-		if ($tgUser->user()->exists()) {
-			if ($tgUser->blocked) {
-				$tgUser->blocked = false;
-				$tgUser->save();
-			}
-
-			return;
+		if ($tgUser->blocked) {
+			$tgUser->blocked = false;
+			$tgUser->save();
 		}
 
-		$this->sendFirstGreeting();
+		if ($tgUser->user()->doesntExist()) {
+			$this->sendFirstGreeting();
+		}
 	}
 
 	private function createTgUser(Chat $chat): TelegramUser
@@ -46,12 +44,17 @@ class StartCommand extends Command
 	private function sendFirstGreeting(): void
 	{
 		$this->replyWithMessage([
-			'text' => <<<GREATING
+			'text' => $this->getGreetingText(),
+			'parse_mode' => 'MarkdownV2'
+		]);
+	}
+
+	protected function getGreetingText(): string
+	{
+		return <<<GREATING
 Здарова, ёба\!
 Если ты сотрудник webcanape\.ru, то скидывай свое имя и фамилию _\(типа "Иван Иванов"\)_\.
 Если испытываешь с этим затруднения, то чекни сотрудников на странице [wiki](https://wiki.yandex.ru/spisok-i-kontaktnye-dannye-sotrudnikov/)\.
-GREATING,
-			'parse_mode' => 'MarkdownV2'
-		]);
+GREATING;
 	}
 }

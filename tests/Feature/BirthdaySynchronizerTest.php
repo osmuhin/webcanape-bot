@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Services\Birthday\BirthdayService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\Fixtures\BirthdayDataProvider;
 use Tests\TestCase;
 
@@ -13,7 +14,8 @@ class BirthdaySynchronizerTest extends TestCase
 {
 	use RefreshDatabase;
 
-	public function test_create_users(): void
+	#[Test]
+	public function it_creates_users_while_syncing(): void
 	{
 		$service = new BirthdayService();
 		$service->makeSynchronizer(new BirthdayDataProvider())->sync();
@@ -42,7 +44,8 @@ class BirthdaySynchronizerTest extends TestCase
 		]);
 	}
 
-	public function test_delete_users(): void
+	#[Test]
+	public function it_deletes_users_while_syncing(): void
 	{
 		$unidentified = User::factory()->create();
 
@@ -53,7 +56,8 @@ class BirthdaySynchronizerTest extends TestCase
 		$this->assertDatabaseMissing('users', ['id' => $unidentified->id]);
 	}
 
-	public function test_update_users(): void
+	#[Test]
+	public function it_updates_users_while_syncing(): void
 	{
 		$dataProvider = new BirthdayDataProvider();
 		$ivanov = $dataProvider->makeIvanov();
