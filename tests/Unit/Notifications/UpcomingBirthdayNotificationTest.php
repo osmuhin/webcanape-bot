@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Notifications\UpcomingBirthday;
+namespace Tests\Unit\Notifications;
 
 use App\Models\TelegramUser;
 use App\Models\User;

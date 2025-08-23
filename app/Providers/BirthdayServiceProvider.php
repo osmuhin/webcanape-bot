@@ -2,20 +2,21 @@
 
 namespace App\Providers;
 
-use App\Services\Birthday\BirthdayService;
+use App\Services\Birthday\Birthday;
 use Illuminate\Support\ServiceProvider;
 
 class BirthdayServiceProvider extends ServiceProvider
 {
 	public function register(): void
 	{
-		$this->app->singleton(BirthdayService::class, function () {
-			$service = new BirthdayService();
+		$this->app->singleton(Birthday::class);
+	}
 
-			$service->enableDataProvider(
-				'webcanape-yandex-wiki',
-				\App\Services\Birthday\DataProviders\WebcanapeYandexWiki\DataProvider::class
-			);
-		});
+	public function boot(Birthday $birthday): void
+	{
+		$birthday->enableDataProvider(
+			'webcanape-yandex-wiki',
+			\App\Services\Birthday\DataProviders\WebcanapeYandexWiki\DataProvider::class
+		);
 	}
 }

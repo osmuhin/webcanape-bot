@@ -3,21 +3,60 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use App\Services\Birthday\BirthdayService;
+use App\Services\Birthday\Birthday;
+use App\Services\Birthday\Contracts\DataProvider;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Fixtures\BirthdayDataProvider;
 use Tests\TestCase;
 
-class BirthdaySynchronizerTest extends TestCase
+use function PHPUnit\Framework\assertSame;
+
+class BirthdayServiceTest extends TestCase
 {
 	use RefreshDatabase;
 
 	#[Test]
+	public function it_returns_same_instance_when_resolving_provider_object(): void
+	{
+		$dp = Mockery::mock(DataProvider::class);
+
+		$service = new Birthday();
+
+		assertSame($dp, $service->resolveDataProvider($dp));
+	}
+
+	#[Test]
+	public function it_resolves_registered_provider_instance_by_alias(): void
+	{
+		$dp = Mockery::mock(DataProvider::class);
+
+		$service = new Birthday();
+		$service->enableDataProvider('mocked-data-provider', $dp);
+
+		assertSame($dp, $service->resolveDataProvider('mocked-data-provider'));
+	}
+
+	#[Test]
+	public function it_resolves_and_instantiates_provider_class_by_alias(): void
+	{
+		$dp = Mockery::mock(DataProvider::class, function (MockInterface $mock) {
+			$mock->shouldReceive('make')->once()->andReturn($mock);
+		});
+
+		$service = new Birthday();
+		$service->enableDataProvider('mocked-data-provider', $dp::class);
+
+		assertSame($dp, $service->resolveDataProvider('mocked-data-provider'));
+	}
+
+	#[Test]
 	public function it_creates_users_while_syncing(): void
 	{
-		$service = new BirthdayService();
+		$service = new Birthday();
 		$service->makeSynchronizer(new BirthdayDataProvider())->sync();
 
 		$this->assertDatabaseCount('users', 3);
@@ -49,7 +88,7 @@ class BirthdaySynchronizerTest extends TestCase
 	{
 		$unidentified = User::factory()->create();
 
-		$service = new BirthdayService();
+		$service = new Birthday();
 		$service->makeSynchronizer(new BirthdayDataProvider())->sync();
 
 		$this->assertDatabaseCount('users', 3);
@@ -65,7 +104,7 @@ class BirthdaySynchronizerTest extends TestCase
 
 		User::create($ivanov->toArray());
 
-		$service = new BirthdayService();
+		$service = new Birthday();
 		$service->makeSynchronizer(new BirthdayDataProvider())->sync();
 
 		$this->assertDatabaseCount('users', 3);

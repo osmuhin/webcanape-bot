@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Notifications\UpcomingBirthday\InAWeek;
 use App\Notifications\UpcomingBirthday\Today;
 use App\Notifications\UpcomingBirthday\Tomorrow;
-use App\Services\Birthday\BirthdayService;
+use App\Services\Birthday\Birthday;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
@@ -38,7 +38,7 @@ class NotifyAboutUpcomingBirthdaysTest extends TestCase
 	#[Test]
 	public function it_no_notifications_sent_when_no_upcoming_birthdays()
 	{
-		$service = new BirthdayService();
+		$service = new Birthday();
 		$service->makeNotifier()->notifyAboutUpcomingBirthdays();
 
 		Notification::assertNothingSent();
@@ -64,7 +64,7 @@ class NotifyAboutUpcomingBirthdaysTest extends TestCase
 
 		$this->travelTo($travelsTo);
 
-		$service = new BirthdayService();
+		$service = new Birthday();
 		$service->makeNotifier()->notifyAboutUpcomingBirthdays();
 
 		Notification::assertCount(1);

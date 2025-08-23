@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Services\Birthday\BirthdayService;
+use App\Services\Birthday\Birthday;
 use App\Services\Birthday\Notifier;
 use App\Services\Birthday\Synchronizer;
 use App\Services\Telegram\Telegram;
@@ -27,16 +27,13 @@ class ConsoleTest extends TestCase
 	{
 		Queue::fake();
 
-		$this->instance(
-			BirthdayService::class,
-			Mockery::mock(BirthdayService::class, function (MockInterface $mock) {
-				$syncronizer = Mockery::mock(Synchronizer::class, function (MockInterface $mock) {
-					$mock->expects('sync')->once();
-				});
+		$this->mock(Birthday::class, function (MockInterface $mock) {
+			$syncronizer = Mockery::mock(Synchronizer::class, function (MockInterface $mock) {
+				$mock->expects('sync')->once();
+			});
 
-				$mock->expects('makeSynchronizer')->once()->andReturn($syncronizer);
-			})
-		);
+			$mock->expects('makeSynchronizer')->once()->andReturn($syncronizer);
+		});
 
 		Artisan::call('sync-birthdays');
 
@@ -50,16 +47,13 @@ class ConsoleTest extends TestCase
 	#[Test]
 	public function it_calls_birthdays_notify_command(): void
 	{
-		$this->instance(
-			BirthdayService::class,
-			Mockery::mock(BirthdayService::class, function (MockInterface $mock) {
-				$notifier = Mockery::mock(Notifier::class, function (MockInterface $mock) {
-					$mock->expects('notifyAboutUpcomingBirthdays')->once();
-				});
+		$this->mock(Birthday::class, function (MockInterface $mock) {
+			$notifier = Mockery::mock(Notifier::class, function (MockInterface $mock) {
+				$mock->expects('notifyAboutUpcomingBirthdays')->once();
+			});
 
-				$mock->expects('makeNotifier')->once()->andReturn($notifier);
-			})
-		);
+			$mock->expects('makeNotifier')->once()->andReturn($notifier);
+		});
 
 		Artisan::call('notify');
 	}

@@ -2,8 +2,11 @@
 
 namespace App\Services\Telegram;
 
+use App\Models\TelegramUser;
+use App\Models\User;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api as TelegramApi;
+use Telegram\Bot\Objects\Chat;
 use Telegram\Bot\Objects\Update;
 
 use function Illuminate\Filesystem\join_paths;
@@ -58,6 +61,46 @@ class Telegram
 
 	public function handleMessageUpdate(Update $update): void
 	{
-		Log::debug('Message update', [$update->getMessage()->text]);
+		$this->linkUser(
+			$this->getOrCreateTelegramUser($update->getChat()),
+			$update
+		);
+	}
+
+	public function getOrCreateTelegramUser(Chat $chat): TelegramUser
+	{
+		return TelegramUser::query()
+			->where('chat_id', $chat->id)
+			->firstOr(function () use ($chat) {
+				$tgUser = new TelegramUser();
+				$tgUser->first_name = $chat->first_name;
+				$tgUser->last_name = $chat->last_name;
+				$tgUser->username = $chat->username;
+				$tgUser->chat_id = $chat->id;
+
+				$tgUser->save();
+
+				return $tgUser;
+			});
+	}
+
+	private function linkUser(TelegramUser $tgUser, Update $update): void
+	{
+		$msgText = $update->getMessage()->text;
+		$nameCombination = $this->getFullNameCombination($msgText);
+
+		User::query()
+			->where('name', $nameCombination[0])
+			->orWhere('name', $nameCombination[1]);
+	}
+
+	private function getFullNameCombination(string $fullName): array
+	{
+		[$namePart1, $namePart2] = split_full_name($fullName);
+
+		return [
+			"{$namePart1} {$namePart2}",
+			"{$namePart2} {$namePart1}"
+		];
 	}
 }

@@ -6,11 +6,11 @@ use App\Services\Birthday\Contracts\DataProvider;
 use Illuminate\Container\Container;
 use InvalidArgumentException;
 
-class BirthdayService
+class Birthday
 {
 	private array $dataProviders = [];
 
-	public function enableDataProvider(string $name, string $dataProviderClass): void
+	public function enableDataProvider(string $name, DataProvider|string $dataProviderClass): void
 	{
 		$this->dataProviders[$name] = $dataProviderClass;
 	}
@@ -30,7 +30,7 @@ class BirthdayService
 	/**
 	 * @throws \InvalidArgumentException
 	 */
-	private function resolveDataProvider(DataProvider|string|null $provider): DataProvider
+	public function resolveDataProvider(DataProvider|string|null $provider): DataProvider
 	{
 		if ($provider instanceof DataProvider) {
 			return $provider;
@@ -44,6 +44,12 @@ class BirthdayService
 
 		if (!isset($this->dataProviders[$provider])) {
 			throw new InvalidArgumentException("Birthday users data provider \"{$provider}\" not found.");
+		}
+
+		$provider = $this->dataProviders[$provider];
+
+		if ($provider instanceof DataProvider) {
+			return $provider;
 		}
 
 		return $provider::make($config);

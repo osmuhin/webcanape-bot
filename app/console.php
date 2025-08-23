@@ -1,16 +1,16 @@
 <?php
 
-use App\Services\Birthday\BirthdayService;
+use App\Services\Birthday\Birthday;
 use App\Services\Telegram\Telegram;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('sync-birthdays', function (BirthdayService $birthdayService) {
-	dispatch(fn () => $birthdayService->makeSynchronizer()->sync());
+Artisan::command('sync-birthdays', function (Birthday $birthday) {
+	dispatch(fn () => $birthday->makeSynchronizer()->sync());
 });
 
-Artisan::command('notify', function (BirthdayService $birthdayService) {
-	$birthdayService->makeNotifier()->notifyAboutUpcomingBirthdays();
+Artisan::command('notify', function (Birthday $birthday) {
+	$birthday->makeNotifier()->notifyAboutUpcomingBirthdays();
 });
 
 Artisan::command('tg:webhook:setup', function (Telegram $telegram) {

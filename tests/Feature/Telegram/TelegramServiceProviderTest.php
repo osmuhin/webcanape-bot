@@ -48,7 +48,7 @@ class TelegramServiceProviderTest extends TestCase
 
 		$this->mock(Telegram::class, function (MockInterface $mock) use ($sdk, $update) {
 			$mock->shouldReceive('getSdk')->once()->andReturn($sdk);
-			$mock->shouldReceive('handleMessageUpdate')->with($update)->once();
+			$mock->shouldReceive('handleMessageUpdate')->never();
 		});
 
 		$response = $this->postJson('/telegram/webhook', $rawUpdate);

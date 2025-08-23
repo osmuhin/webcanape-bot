@@ -2,9 +2,8 @@
 
 namespace App\Http\TelegramCommands;
 
-use App\Models\TelegramUser;
+use App\Services\Telegram\Telegram;
 use Telegram\Bot\Commands\Command;
-use Telegram\Bot\Objects\Chat;
 
 class StartCommand extends Command
 {
@@ -12,11 +11,9 @@ class StartCommand extends Command
 
 	public function handle(): void
 	{
-		$chat = $this->getUpdate()->getChat();
-
-		$tgUser = TelegramUser::query()
-			->where('chat_id', $chat->id)
-			->firstOr(fn () => $this->createTgUser($chat));
+		$tgUser = app(Telegram::class)->getOrCreateTelegramUser(
+			$this->getUpdate()->getChat()
+		);
 
 		if ($tgUser->blocked) {
 			$tgUser->blocked = false;
@@ -26,19 +23,6 @@ class StartCommand extends Command
 		if ($tgUser->user()->doesntExist()) {
 			$this->sendFirstGreeting();
 		}
-	}
-
-	private function createTgUser(Chat $chat): TelegramUser
-	{
-		$tgUser = new TelegramUser();
-		$tgUser->first_name = $chat->first_name;
-		$tgUser->last_name = $chat->last_name;
-		$tgUser->username = $chat->username;
-		$tgUser->chat_id = $chat->id;
-
-		$tgUser->save();
-
-		return $tgUser;
 	}
 
 	private function sendFirstGreeting(): void
