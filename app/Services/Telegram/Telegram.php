@@ -17,8 +17,6 @@ class Telegram
 
 	private string $adminChatId;
 
-	private string $webhookBaseUrl;
-
 	private string $webhookUrl;
 
 	private ?string $webhookSecretToken;
@@ -28,14 +26,13 @@ class Telegram
 		$this->sdk = new TelegramApi($config['bot_token']);
 
 		$this->adminChatId =        $config['admin_chat_id'];
-		$this->webhookBaseUrl =     $config['webhook_base_url'];
 		$this->webhookUrl =         $config['webhook_url'];
 		$this->webhookSecretToken = $config['webhook_secret_token'];
 	}
 
-	public function setupWebhook()
+	public function setupWebhook(string $baseUrl)
 	{
-		$params = ['url' => $this->getWebhookUrl(abs: true)];
+		$params = ['url' => $this->getWebhookUrl($baseUrl)];
 
 		if ($token = $this->webhookSecretToken) {
 			$params['secret_token'] = $token;
@@ -44,9 +41,9 @@ class Telegram
 		$this->sdk->setWebhook($params);
 	}
 
-	public function getWebhookUrl(bool $abs = false): string
+	public function getWebhookUrl(?string $baseUrl = null): string
 	{
-		return $abs ? join_paths($this->webhookBaseUrl, $this->webhookUrl) : $this->webhookUrl;
+		return $baseUrl ? join_paths($baseUrl, $this->webhookUrl) : $this->webhookUrl;
 	}
 
 	public function getWebhookSecretToken(): string
@@ -86,14 +83,16 @@ class Telegram
 
 	public function linkUser(TelegramUser $tgUser, Update $update): void
 	{
+		if ($tgUser->user()->exists()) {
+			return;
+		}
+
 		$this->findUser($update)->telegramUser()->save($tgUser);
 
-		dispatch(function () use ($update) {
-			$this->getSdk()->sendMessage([
-				'chat_id' => $update->getChat()->id,
-				'text' => 'Гуд 👍'
-			]);
-		});
+		$this->getSdk()->sendMessage([
+			'chat_id' => $update->getChat()->id,
+			'text' => 'Гуд 👍'
+		]);
 	}
 
 	private function findUser(Update $update): User
@@ -107,7 +106,7 @@ class Telegram
 			->firstOr(function () use ($update) {
 				throw new TelegramException(
 					$update->getChat(),
-					"Ты нам незнаком 😢, возможно просто опечатка\.\nСверься с [wiki](https://wiki.yandex.ru/spisok-i-kontaktnye-dannye-sotrudnikov/) компании)",
+					"Ты нам незнаком 😢, возможно просто опечатка\.\nСверься с [wiki](https://wiki.yandex.ru/spisok-i-kontaktnye-dannye-sotrudnikov/) компании\)",
 					['parse_mode' => 'MarkdownV2']
 				);
 			});

@@ -34,7 +34,10 @@ class InAWeek extends Notification implements ShouldQueue
 		$message->sendWhen(!$recipient->blocked)
 			->parseMode(ParseMode::HTML)
 			->to($recipient->chat_id)
-			->content("🟢 {$this->bdayPerson->name} ({$this->bdayPerson->post}) <b><u>через неделю</u></b> ({$date}) будет праздновать день рождения.");
+			->content(<<<MSG
+🟢 {$this->bdayPerson->name} ({$this->bdayPerson->post}) <b><u>через неделю</u></b> ({$date}) будет праздновать день рождения.<br>
+<a href="{$this->bdayPerson->photo}">Фото</a>
+MSG);
 
 		return $message;
 	}

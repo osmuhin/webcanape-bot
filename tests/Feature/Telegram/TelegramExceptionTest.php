@@ -5,8 +5,7 @@ namespace Tests\Feature\Telegram;
 use App\Services\Telegram\Exceptions\TelegramException;
 use App\Services\Telegram\Telegram;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Queue\CallQueuedClosure;
-use Illuminate\Support\Facades\Queue;
+use Illuminate\Http\Request;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -33,8 +32,6 @@ class TelegramExceptionTest extends TestCase
 	#[Test]
 	public function it_dispatches_job_and_sends_message_when_exception_reported()
 	{
-		Queue::fake();
-
 		$exception = new TelegramException(
 			$this->update->getChat(),
 			'something wrong',
@@ -57,10 +54,6 @@ class TelegramExceptionTest extends TestCase
 
 		$exception->report();
 
-		Queue::assertClosurePushed(function (CallQueuedClosure $job) {
-			$job->handle($this->app);
-
-			return true;
-		});
+		$this->createTestResponse($exception->render(), new Request())->assertOk();
 	}
 }

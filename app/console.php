@@ -6,17 +6,20 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('sync-birthdays', function (Birthday $birthday) {
-	dispatch(fn () => $birthday->makeSynchronizer()->sync());
+	$birthday->makeSynchronizer()->sync();
 });
 
 Artisan::command('notify', function (Birthday $birthday) {
 	$birthday->makeNotifier()->notifyAboutUpcomingBirthdays();
 });
 
-Artisan::command('tg:webhook:setup', function (Telegram $telegram) {
-	$telegram->setupWebhook();
+Artisan::command('tg:webhook:setup {baseUrl?}', function (Telegram $telegram) {
+	/** @var \Illuminate\Console\Command $this */
 
-	$this->info("Telegram webhook is set on URL {$telegram->getWebhookUrl(abs: true)}");
+	$baseUrl = $this->argument('baseUrl') ?: config('app.url');
+	$telegram->setupWebhook($baseUrl);
+
+	$this->info("Telegram webhook is set on URL {$telegram->getWebhookUrl($baseUrl)}");
 });
 
 Artisan::command('tg:webhook:delete', function (Telegram $telegram) {

@@ -40,7 +40,10 @@ class Today extends Notification implements ShouldQueue
 		$message->sendWhen(!$recipient->blocked)
 			->parseMode(ParseMode::HTML)
 			->to($recipient->chat_id)
-			->content("🎉🎁 {$this->bdayPerson->name} ({$this->bdayPerson->post}) <b><u>сегодня</u></b> празднует день рождения ({$date}).");
+			->content(<<<MSG
+🎉🎁 {$this->bdayPerson->name} ({$this->bdayPerson->post}) <b><u>сегодня</u></b> празднует день рождения ({$date}).<br>
+<a href="{$this->bdayPerson->photo}">Фото</a>
+MSG);
 
 		return $message;
 	}

@@ -23,9 +23,20 @@ class UpcomingBirthdayNotificationTest extends TestCase
 	public static function messagesProvider(): array
     {
         return [
-            [Today::class, '🎉🎁 Иван Иванов (Программист) <b><u>сегодня</u></b> празднует день рождения (15 января).'],
-            [Tomorrow::class, '🟠 Иван Иванов (Программист) <b><u>завтра</u></b> будет праздновать день рождения (15 января).'],
-            [InAWeek::class, '🟢 Иван Иванов (Программист) <b><u>через неделю</u></b> (15 января) будет праздновать день рождения.']
+            [Today::class, <<<MSG
+🎉🎁 Иван Иванов (Программист) <b><u>сегодня</u></b> празднует день рождения (15 января).<br>
+<a href="/image.png">Фото</a>
+MSG],
+            [Tomorrow::class,
+<<<MSG
+🟠 Иван Иванов (Программист) <b><u>завтра</u></b> будет праздновать день рождения (15 января).<br>
+<a href="/image.png">Фото</a>
+MSG],
+            [InAWeek::class,
+<<<MSG
+🟢 Иван Иванов (Программист) <b><u>через неделю</u></b> (15 января) будет праздновать день рождения.<br>
+<a href="/image.png">Фото</a>
+MSG]
         ];
     }
 
@@ -43,6 +54,7 @@ class UpcomingBirthdayNotificationTest extends TestCase
 		$bDayPerson->allows('getAttribute')->with('name')->andReturn('Иван Иванов');
 		$bDayPerson->allows('getAttribute')->with('birthdate')->andReturn(Carbon::createFromDate(month: 1, day: 15));
 		$bDayPerson->allows('getAttribute')->with('post')->andReturn('Программист');
+		$bDayPerson->allows('getAttribute')->with('photo')->andReturn('/image.png');
 
 		$recipient1 = Mockery::mock(TelegramUser::class);
 		$recipient1->allows('getAttribute')->with('chat_id')->andReturn(14);

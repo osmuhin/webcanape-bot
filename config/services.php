@@ -21,7 +21,6 @@ return [
 	'telegram' => [
 		'bot_token' => env('TELEGRAM_BOT_TOKEN'),
 		'admin_chat_id' => env('TELEGRAM_ADMIN_CHAT_ID'),
-		'webhook_base_url' => env('TELEGRAM_WEBHOOK_BASE_URL', env('APP_URL')),
 		'webhook_url' => '/telegram/webhook',
 		'webhook_secret_token' => env('TELEGRAM_WEBHOOK_SECRET_TOKEN')
 	],

@@ -7,9 +7,7 @@ use App\Services\Birthday\Notifier;
 use App\Services\Birthday\Synchronizer;
 use App\Services\Telegram\Telegram;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Queue\CallQueuedClosure;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Queue;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -25,8 +23,6 @@ class ConsoleTest extends TestCase
 	#[Test]
 	public function it_calls_birthdays_synchronization_command(): void
 	{
-		Queue::fake();
-
 		$this->mock(Birthday::class, function (MockInterface $mock) {
 			$syncronizer = Mockery::mock(Synchronizer::class, function (MockInterface $mock) {
 				$mock->expects('sync')->once();
@@ -36,12 +32,6 @@ class ConsoleTest extends TestCase
 		});
 
 		Artisan::call('sync-birthdays');
-
-		Queue::assertClosurePushed(function (CallQueuedClosure $job) {
-			$job->handle($this->app);
-
-			return true;
-		});
 	}
 
 	#[Test]

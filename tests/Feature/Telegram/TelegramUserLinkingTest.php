@@ -7,8 +7,6 @@ use App\Models\User;
 use App\Services\Telegram\Exceptions\TelegramException;
 use App\Services\Telegram\Telegram;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Queue\CallQueuedClosure;
-use Illuminate\Support\Facades\Queue;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\Test;
@@ -48,8 +46,6 @@ class TelegramUserLinkingTest extends TestCase
 	#[Test]
 	public function it_links_telegram_user_to_existing_user_and_dispatches_answer(): void
 	{
-		Queue::fake();
-
 		$tgUser = TelegramUser::factory()->create(['user_id' => null]);
 		$user = User::factory()->create(['name' => 'Иванов Иван']);
 
@@ -71,11 +67,5 @@ class TelegramUserLinkingTest extends TestCase
 			'id' => $tgUser->id,
 			'user_id' => $user->id
 		]);
-
-		Queue::assertClosurePushed(function (CallQueuedClosure $job) {
-			$job->handle($this->app);
-
-			return true;
-		});
 	}
 }
