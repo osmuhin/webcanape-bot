@@ -31,7 +31,11 @@ class TelegramServiceProvider extends ServiceProvider
 			$update = $telegram->getSdk()->commandsHandler(webhook: true);
 
 			// Обработает сообщение, только если оно не является командой
-			if (!$update->getMessage()->hasCommand() && $update->isType('message')) {
+			if (
+				!$update->getMessage()->hasCommand() &&
+				$update->isType('message') &&
+				$update->getMessage()->isType('text')
+			) {
 				$telegram->handleMessageUpdate($update);
 			}
 		})->middleware(WebhookMiddleware::class);
