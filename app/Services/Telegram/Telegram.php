@@ -4,7 +4,7 @@ namespace App\Services\Telegram;
 
 use App\Models\TelegramUser;
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
+use App\Services\Telegram\Exceptions\TelegramException;
 use Telegram\Bot\Api as TelegramApi;
 use Telegram\Bot\Objects\Chat;
 use Telegram\Bot\Objects\Update;
@@ -84,14 +84,33 @@ class Telegram
 			});
 	}
 
-	private function linkUser(TelegramUser $tgUser, Update $update): void
+	public function linkUser(TelegramUser $tgUser, Update $update): void
+	{
+		$this->findUser($update)->telegramUser()->save($tgUser);
+
+		dispatch(function () use ($update) {
+			$this->getSdk()->sendMessage([
+				'chat_id' => $update->getChat()->id,
+				'text' => 'Гуд 👍'
+			]);
+		});
+	}
+
+	private function findUser(Update $update): User
 	{
 		$msgText = $update->getMessage()->text;
 		$nameCombination = $this->getFullNameCombination($msgText);
 
-		User::query()
+		return User::query()
 			->where('name', $nameCombination[0])
-			->orWhere('name', $nameCombination[1]);
+			->orWhere('name', $nameCombination[1])
+			->firstOr(function () use ($update) {
+				throw new TelegramException(
+					$update->getChat(),
+					"Ты нам незнаком 😢, возможно просто опечатка\.\nСверься с [wiki](https://wiki.yandex.ru/spisok-i-kontaktnye-dannye-sotrudnikov/) компании)",
+					['parse_mode' => 'MarkdownV2']
+				);
+			});
 	}
 
 	private function getFullNameCombination(string $fullName): array

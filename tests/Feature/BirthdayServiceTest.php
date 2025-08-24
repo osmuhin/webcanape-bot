@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Services\Birthday\Birthday;
 use App\Services\Birthday\Contracts\DataProvider;
+use App\Services\Birthday\UserData;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
@@ -98,9 +99,11 @@ class BirthdayServiceTest extends TestCase
 	#[Test]
 	public function it_updates_users_while_syncing(): void
 	{
-		$dataProvider = new BirthdayDataProvider();
-		$ivanov = $dataProvider->makeIvanov();
+		$ivanov = new UserData();
+		$ivanov->name = 'Иван Иванов';
 		$ivanov->birthdate = Carbon::createFromDate(month: 1, day: 15);
+		$ivanov->photo = '/storage/ivanov.png';
+		$ivanov->post = 'Директор';
 
 		User::create($ivanov->toArray());
 

@@ -22,7 +22,7 @@ class BirthdayDataProvider implements DataProviderContract
 		];
 	}
 
-	public function makeIvanov(): UserData
+	private function makeIvanov(): UserData
 	{
 		$ivanov = new UserData();
 		$ivanov->name = 'Иван Иванов';
@@ -33,7 +33,7 @@ class BirthdayDataProvider implements DataProviderContract
 		return $ivanov;
 	}
 
-	public function makePetrov(): UserData
+	private function makePetrov(): UserData
 	{
 		$petrov = new UserData();
 		$petrov->name = 'Арсений Петров';
@@ -44,7 +44,7 @@ class BirthdayDataProvider implements DataProviderContract
 		return $petrov;
 	}
 
-	public function makeSidorov(): UserData
+	private function makeSidorov(): UserData
 	{
 		$petrov = new UserData();
 		$petrov->name = 'Михаил Сидоров';
