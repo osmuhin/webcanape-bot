@@ -24,6 +24,8 @@ abstract class AbstractTableAdapter
 			return null;
 		}
 
+		$value = html_entity_decode($value);
+		$value = strip_tags($value);
 		$value = preg_replace('/\x{A0}/u', ' ', $value);
 		$value = trim($value, characters: " \n\r\t\v\0*");
 		$value = preg_replace('/\s{2,}/u', ' ', $value);

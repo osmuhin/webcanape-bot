@@ -65,9 +65,9 @@ class DataProviderTest extends TestCase
 		], $ivanov->toArray());
 
 		assertSame([
-			'name' => 'Василий Петров',
+			'name' => 'Ирина Петрова',
 			'birthdate' => '2025-09-30',
-			'photo' => 'https://wiki.yandex.ru/storage/petrov.png',
+			'photo' => 'https://wiki.yandex.ru/storage/petrova.png',
 			'post' => 'Дизайнер'
 		], $petrov->toArray());
 	}
@@ -92,11 +92,11 @@ class DataProviderTest extends TestCase
 
 	private function getStaffDetails2()
 	{
-		return "#|\n||\n\n**ФИО**\n\n|\n\n**Фото**\n\n|\n\n**Должность**\n\n|\n\n**Внутренний**\n\n|\n\n**Контакты**\n\n|\n\n**Немного о себе**\n\n||\n||\nВасилий Петров\n\n|\n\n![Петров (Дизайнер).png](/storage/petrov.png =349x)\n\n|\n\nДизайнер\n\n|\n\n401\n\n|\n\n8 (988) 888-88-88\n\n[petrov@example.ru](mailto:petrov@example.ru)\n\n|\n\nЗначимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требует от нас системного анализа модели развития!\n\nЗадача...\n\n||\n|#";
+		return "#|\n||\n\n**ФИО**\n\n|\n\n**Фото**\n\n|\n\n**Должность**\n\n|\n\n**Внутренний**\n\n|\n\n**Контакты**\n\n|\n\n**Немного о себе**\n\n||\n||\n Ирина Петрова (Иванова)**в ДЕКРЕТЕ (в)\n\n|\n\n![Петрова (Дизайнер).png](/storage/petrova.png =349x)\n\n|\n\nДизайнер&nbsp;\n\n|\n\n401\n\n|\n\n8 (988) 888-88-88\n\n[petrova@example.ru](mailto:petrova@example.ru)\n\n|\n\nЗначимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требует от нас системного анализа модели развития!\n\nЗадача...\n\n||\n|#";
 	}
 
 	private function getBirthdays()
 	{
-		return "#|\n||\n\n**Дата**\n\n|\n\n**ФИО**\n\n||\n||\n\n05 января\n\n|\n\nИван Иванов\n\n||\n||\n\n30 сентября\n\n|\n\nВасилий Петров\n\n||\n|#\n\n&nbsp;\n";
+		return "#|\n||\n\n**Дата**\n\n|\n\n**ФИО**\n\n||\n||\n\n05 января\n\n|\n\nИван Иванов\n\n||\n||\n\n30 сентября\n\n|\n\nИрина Петрова\n\n||\n|#\n\n&nbsp;\n";
 	}
 }

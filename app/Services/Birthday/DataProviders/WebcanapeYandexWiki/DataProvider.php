@@ -65,7 +65,7 @@ class DataProvider implements DataProviderContract
 
 		foreach ($employeeCollection as $employee) {
 			$user = new UserData();
-			$user->name = $employee->name;
+			$user->name = $employee->firstName . ' ' . $employee->lastName;
 			$user->photo = $employee->photo;
 			$user->post = $employee->post;
 
