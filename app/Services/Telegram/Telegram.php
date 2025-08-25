@@ -95,6 +95,14 @@ class Telegram
 		]);
 	}
 
+	public function sendMessageToAdmin(string $message, array $options = [])
+	{
+		return $this->getSdk()->sendMessage(array_merge([
+			'chat_id' => $this->adminChatId,
+			'text' => $message
+		], $options));
+	}
+
 	private function findUser(Update $update): User
 	{
 		$msgText = $update->getMessage()->text;

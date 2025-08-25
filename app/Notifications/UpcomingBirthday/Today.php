@@ -41,7 +41,7 @@ class Today extends Notification implements ShouldQueue
 			->parseMode(ParseMode::HTML)
 			->to($recipient->chat_id)
 			->content(<<<MSG
-🎉🎁 {$this->bdayPerson->name} ({$this->bdayPerson->post}) <b><u>сегодня</u></b> празднует день рождения ({$date}).<br>
+🎉🎁 {$this->bdayPerson->name} ({$this->bdayPerson->post}) <b><u>сегодня</u></b> празднует день рождения ({$date}).
 <a href="{$this->bdayPerson->photo}">Фото</a>
 MSG);
 

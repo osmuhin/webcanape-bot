@@ -28,5 +28,5 @@ Artisan::command('tg:webhook:delete', function (Telegram $telegram) {
 	$this->info("Telegram webhook was removed successfuly");
 });
 
-// Schedule::command('sync-birthdays')->dailyAt('01:20');
-// Schedule::command('notify')->dailyAt('7:00');
+Schedule::command('sync-birthdays')->dailyAt('01:20');
+Schedule::command('notify')->dailyAt('7:00');
