@@ -1,18 +1,31 @@
 # For production purposes
 name: webcanape-bot
 
+networks:
+  proxy-manager:
+    driver: bridge
+    name: nginx-proxy-manager
+    external: true
+
+  database:
+    driver: bridge
+    name: database
+    external: true
+
 services:
   php:
     build: ./php
     volumes:
       - ../:/app
       - ../.runtime/cache/composer:/.composer/cache
-      - ../.runtime/logs/php:/var/log/php
     user: $USER_ID:$GROUP_ID
     working_dir: /app
     depends_on:
-      mariadb:
+      database:
         condition: service_healthy
+    networks:
+      - database
+      - default
 
   cron:
     build:
@@ -20,9 +33,12 @@ services:
       args:
         SCHEDULER_TOKEN: $SCHEDULER_TOKEN
     depends_on:
-      - php
+      - nginx
     volumes:
       - ../.runtime/logs/cron:/var/log/cron
+    networks:
+      - database
+      - default
     command:
       - crond
       - "-f"
@@ -38,12 +54,16 @@ services:
     user: $USER_ID:$GROUP_ID
     working_dir: /app
     depends_on:
-      mariadb:
+      database:
         condition: service_healthy
     command:
       - php
       - artisan
       - queue:work
+    networks:
+      - database
+      - default
+
 
   nginx:
     image: nginx:alpine
@@ -55,3 +75,6 @@ services:
       - 80:80
     depends_on:
       - php
+    networks:
+      - proxy-manager
+      - default
