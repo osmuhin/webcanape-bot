@@ -1,0 +1,57 @@
+# For production purposes
+name: webcanape-bot
+
+services:
+  php:
+    build: ./php
+    volumes:
+      - ../:/app
+      - ../.runtime/cache/composer:/.composer/cache
+      - ../.runtime/logs/php:/var/log/php
+    user: $USER_ID:$GROUP_ID
+    working_dir: /app
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  cron:
+    build:
+      context: ./cron
+      args:
+        SCHEDULER_TOKEN: $SCHEDULER_TOKEN
+    depends_on:
+      - php
+    volumes:
+      - ../.runtime/logs/cron:/var/log/cron
+    command:
+      - crond
+      - "-f"
+      - "-L"
+      - "/dev/stdout"
+
+  queue:
+    build: ./queue
+    volumes:
+      - ../:/app
+      - ../.runtime/cache/composer:/.composer/cache
+      - ../.runtime/logs/php:/var/log/php
+    user: $USER_ID:$GROUP_ID
+    working_dir: /app
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    command:
+      - php
+      - artisan
+      - queue:work
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ../:/app:ro
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    working_dir: /app
+    ports:
+      - 80:80
+    depends_on:
+      - php
