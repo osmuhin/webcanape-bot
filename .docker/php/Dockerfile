@@ -4,4 +4,6 @@ ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/relea
 
 RUN install-php-extensions pdo_mysql
 
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+RUN curl -sS https://getcomposer.org/installer \
+    | php -- --install-dir=/usr/local/bin --filename=composer \
+    && composer --version

@@ -20,9 +20,7 @@ services:
       - ../.runtime/cache/composer:/.composer/cache
     user: $USER_ID:$GROUP_ID
     working_dir: /app
-    depends_on:
-      database:
-        condition: service_healthy
+    restart: unless-stopped
     networks:
       - database
       - default
@@ -36,14 +34,15 @@ services:
       - nginx
     volumes:
       - ../.runtime/logs/cron:/var/log/cron
-    networks:
-      - database
-      - default
+    restart: unless-stopped
     command:
       - crond
       - "-f"
       - "-L"
       - "/dev/stdout"
+    networks:
+      - database
+      - default
 
   queue:
     build: ./queue
@@ -53,28 +52,24 @@ services:
       - ../.runtime/logs/php:/var/log/php
     user: $USER_ID:$GROUP_ID
     working_dir: /app
-    depends_on:
-      database:
-        condition: service_healthy
     command:
       - php
       - artisan
       - queue:work
+    restart: unless-stopped
     networks:
       - database
       - default
-
 
   nginx:
     image: nginx:alpine
     volumes:
       - ../:/app:ro
-      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     working_dir: /app
-    ports:
-      - 80:80
     depends_on:
       - php
+    restart: unless-stopped
     networks:
       - proxy-manager
       - default
