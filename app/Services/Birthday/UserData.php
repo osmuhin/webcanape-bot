@@ -14,6 +14,8 @@ class UserData
 
 	public ?string $post;
 
+	public bool $notifyAboutBirthday = true;
+
 	public function toArray()
 	{
 		return [
@@ -21,6 +23,7 @@ class UserData
 			'birthdate' => $this->birthdate->toDateString(),
 			'photo' => $this->photo,
 			'post' => $this->post,
+			'notify_about_birthday' => $this->notifyAboutBirthday,
 		];
 	}
 }

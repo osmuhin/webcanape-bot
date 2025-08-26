@@ -61,14 +61,16 @@ class DataProviderTest extends TestCase
 			'name' => 'Иван Иванов',
 			'birthdate' => '2025-01-05',
 			'photo' => 'https://wiki.yandex.ru/storage/ivanov.png',
-			'post' => 'Директор'
+			'post' => 'Директор',
+			'notify_about_birthday' => true,
 		], $ivanov->toArray());
 
 		assertSame([
 			'name' => 'Ирина Петрова',
 			'birthdate' => '2025-09-30',
 			'photo' => 'https://wiki.yandex.ru/storage/petrova.png',
-			'post' => 'Дизайнер'
+			'post' => 'Дизайнер',
+			'notify_about_birthday' => false,
 		], $petrov->toArray());
 	}
 
@@ -97,6 +99,6 @@ class DataProviderTest extends TestCase
 
 	private function getBirthdays()
 	{
-		return "#|\n||\n\n**Дата**\n\n|\n\n**ФИО**\n\n||\n||\n\n05 января\n\n|\n\nИван Иванов\n\n||\n||\n\n30 сентября\n\n|\n\nИрина Петрова\n\n||\n|#\n\n&nbsp;\n";
+		return "#|\n||\n\n**Дата**\n\n|\n\n**ФИО**\n\n||\n||\n\n05 января\n\n|\n\nИван Иванов\n\n||\n||\n\n30 сентября\n\n|\n\nИрина Петрова  (БЕз рассылки)\n\n||\n|#\n\n&nbsp;\n";
 	}
 }

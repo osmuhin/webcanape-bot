@@ -6,6 +6,7 @@ use App\Http\TelegramCommands\StartCommand;
 use App\Services\Telegram\Telegram;
 use App\Services\Telegram\WebhookMiddleware;
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
@@ -33,7 +34,12 @@ class TelegramServiceProvider extends ServiceProvider
 	public function boot(): void
 	{
 		$this->configureRoute();
-		$this->configureExceptionsHanling();
+
+		$handler = $this->app->make(\Illuminate\Contracts\Debug\ExceptionHandler::class);
+
+		if ($handler instanceof Handler) {
+			$this->configureExceptionsHanling($handler);
+		}
 	}
 
 	protected function configureRoute(): void
@@ -42,9 +48,6 @@ class TelegramServiceProvider extends ServiceProvider
 			$telegram = app(Telegram::class);
 			$update = $telegram->getSdk()->commandsHandler(webhook: true);
 
-			// Log::debug('Tg message: ', request()->all());
-
-			// Обработает сообщение, только если оно не является командой
 			if (
 				!$update->getMessage()->hasCommand() &&
 				$update->isType('message') &&
@@ -57,11 +60,8 @@ class TelegramServiceProvider extends ServiceProvider
 			->middleware(WebhookMiddleware::class);
 	}
 
-	protected function configureExceptionsHanling()
+	protected function configureExceptionsHanling(Handler $handler)
 	{
-		/** @var \Illuminate\Foundation\Exceptions\Handler $handler */
-		$handler = $this->app->make(\Illuminate\Contracts\Debug\ExceptionHandler::class);
-
 		$handler->reportable(function (Throwable $e) {
 			if ($e instanceof TelegramSDKException) {
 				return true;

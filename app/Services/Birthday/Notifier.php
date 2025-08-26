@@ -26,7 +26,7 @@ class Notifier
 		$this->notifyAboutBirthday(now()->addWeek(), InAWeek::class);
 	}
 
-	private function notifyAboutBirthday(Carbon $targetDate, string $notificationClass)
+	private function notifyAboutBirthday(Carbon $targetDate, string $notificationClass): void
 	{
 		$bDayPersons = $this->getBirthdayPersons($targetDate);
 
