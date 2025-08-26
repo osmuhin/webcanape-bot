@@ -4,7 +4,6 @@ namespace App\Services\Telegram\Exceptions;
 
 use App\Services\Telegram\Telegram;
 use Exception;
-use Illuminate\Http\Response;
 use Telegram\Bot\Objects\Chat;
 
 class TelegramException extends Exception
@@ -26,10 +25,5 @@ class TelegramException extends Exception
 				'text' => $this->message
 			], $this->sendMessageOptions)
 		);
-	}
-
-	public function render()
-	{
-		return new Response();
 	}
 }

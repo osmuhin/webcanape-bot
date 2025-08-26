@@ -35,7 +35,7 @@ class Tomorrow extends Notification implements ShouldQueue
 			->parseMode(ParseMode::HTML)
 			->to($recipient->chat_id)
 			->content(<<<MSG
-🟠 {$this->bdayPerson->name} ({$this->bdayPerson->post}) <b><u>завтра</u></b> будет праздновать день рождения ({$date}).<br>
+🟠 {$this->bdayPerson->name} ({$this->bdayPerson->post}) <b><u>завтра</u></b> будет праздновать день рождения ({$date}).
 <a href="{$this->bdayPerson->photo}">Фото</a>
 MSG);
 

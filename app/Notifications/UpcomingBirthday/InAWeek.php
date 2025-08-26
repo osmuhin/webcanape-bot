@@ -35,7 +35,7 @@ class InAWeek extends Notification implements ShouldQueue
 			->parseMode(ParseMode::HTML)
 			->to($recipient->chat_id)
 			->content(<<<MSG
-🟢 {$this->bdayPerson->name} ({$this->bdayPerson->post}) <b><u>через неделю</u></b> ({$date}) будет праздновать день рождения.<br>
+🟢 {$this->bdayPerson->name} ({$this->bdayPerson->post}) <b><u>через неделю</u></b> ({$date}) будет праздновать день рождения.
 <a href="{$this->bdayPerson->photo}">Фото</a>
 MSG);
 

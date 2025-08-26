@@ -1,0 +1,75 @@
+# For production purposes
+name: webcanape-bot
+
+networks:
+  proxy-manager:
+    driver: bridge
+    name: nginx-proxy-manager
+    external: true
+
+  database:
+    driver: bridge
+    name: database
+    external: true
+
+services:
+  php:
+    build: ./php
+    volumes:
+      - ../:/app
+      - ../.runtime/cache/composer:/.composer/cache
+    user: $USER_ID:$GROUP_ID
+    working_dir: /app
+    restart: unless-stopped
+    networks:
+      - database
+      - default
+
+  cron:
+    build:
+      context: ./cron
+      args:
+        SCHEDULER_TOKEN: $SCHEDULER_TOKEN
+    depends_on:
+      - nginx
+    volumes:
+      - ../.runtime/logs/cron:/var/log/cron
+    restart: unless-stopped
+    command:
+      - crond
+      - "-f"
+      - "-L"
+      - "/dev/stdout"
+    networks:
+      - database
+      - default
+
+  queue:
+    build: ./queue
+    volumes:
+      - ../:/app
+      - ../.runtime/cache/composer:/.composer/cache
+      - ../.runtime/logs/php:/var/log/php
+    user: $USER_ID:$GROUP_ID
+    working_dir: /app
+    command:
+      - php
+      - artisan
+      - queue:work
+    restart: unless-stopped
+    networks:
+      - database
+      - default
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ../:/app:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    working_dir: /app
+    depends_on:
+      - php
+    restart: unless-stopped
+    networks:
+      - proxy-manager
+      - default

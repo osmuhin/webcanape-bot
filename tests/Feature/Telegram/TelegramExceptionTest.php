@@ -53,7 +53,5 @@ class TelegramExceptionTest extends TestCase
 		});
 
 		$exception->report();
-
-		$this->createTestResponse($exception->render(), new Request())->assertOk();
 	}
 }
