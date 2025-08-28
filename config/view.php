@@ -28,6 +28,6 @@ return [
     |
     */
 
-    'compiled' => runtime_path('cache/views'),
+    'compiled' => runtime_path('cache/app/views'),
 
 ];

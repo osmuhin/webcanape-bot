@@ -9,14 +9,14 @@ return new class extends Migration
 	public function up(): void
 	{
 		Schema::table('users', function (Blueprint $table) {
-			$table->boolean('notify_about_birthday')->default(true)->after('birthdate');
+			$table->boolean('hidden_from_other')->default(false)->after('birthdate');
 		});
 	}
 
 	public function down(): void
 	{
 		Schema::table('users', function (Blueprint $table) {
-			$table->dropColumn('notify_about_birthday');
+			$table->dropColumn('hidden_from_other');
 		});
 	}
 };

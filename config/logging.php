@@ -2,7 +2,6 @@
 
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
-use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Processor\PsrLogMessageProcessor;
 
 return [
@@ -61,19 +60,19 @@ return [
 		'sql' => [
 			'driver' => 'daily',
 			'days' => 2,
-			'path' => runtime_path('logs/app/sql.log')
+			'path' => runtime_path('logs/sql.log')
 		],
 
 		'single' => [
 			'driver' => 'single',
-			'path' => runtime_path('logs/app/laravel.log'),
+			'path' => runtime_path('logs/laravel.log'),
 			'level' => env('LOG_LEVEL', 'debug'),
 			'replace_placeholders' => true
 		],
 
 		'emergency' => [
 			'driver' => 'single',
-			'path' => runtime_path('logs/app/emergency.log'),
+			'path' => runtime_path('logs/emergency.log'),
 			'level' => 'emergency',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -81,7 +80,7 @@ return [
 
 		'alert' => [
 			'driver' => 'single',
-			'path' => runtime_path('logs/app/alert.log'),
+			'path' => runtime_path('logs/alert.log'),
 			'level' => 'alert',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -89,7 +88,7 @@ return [
 
 		'critical' => [
 			'driver' => 'single',
-			'path' => runtime_path('logs/app/critical.log'),
+			'path' => runtime_path('logs/critical.log'),
 			'level' => 'critical',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -97,7 +96,7 @@ return [
 
 		'error' => [
 			'driver' => 'single',
-			'path' => runtime_path('logs/app/error.log'),
+			'path' => runtime_path('logs/error.log'),
 			'level' => 'error',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -105,7 +104,7 @@ return [
 
 		'warning' => [
 			'driver' => 'single',
-			'path' => runtime_path('logs/app/warning.log'),
+			'path' => runtime_path('logs/warning.log'),
 			'level' => 'warning',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -113,7 +112,7 @@ return [
 
 		'notice' => [
 			'driver' => 'single',
-			'path' => runtime_path('logs/app/notice.log'),
+			'path' => runtime_path('logs/notice.log'),
 			'level' => 'notice',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -121,7 +120,7 @@ return [
 
 		'info' => [
 			'driver' => 'single',
-			'path' => runtime_path('logs/app/info.log'),
+			'path' => runtime_path('logs/info.log'),
 			'level' => 'info',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -129,7 +128,7 @@ return [
 
 		'debug' => [
 			'driver' => 'single',
-			'path' => runtime_path('logs/app/debug.log'),
+			'path' => runtime_path('logs/debug.log'),
 			'level' => 'debug',
 			'bubble' => false,
 			'replace_placeholders' => true
@@ -137,31 +136,10 @@ return [
 
 		'daily' => [
 			'driver' => 'daily',
-			'path' => runtime_path('logs/app/laravel.log'),
+			'path' => runtime_path('logs/laravel.log'),
 			'level' => env('LOG_LEVEL', 'debug'),
 			'days' => 14,
 			'replace_placeholders' => true,
-		],
-
-		'slack' => [
-			'driver' => 'slack',
-			'url' => env('LOG_SLACK_WEBHOOK_URL'),
-			'username' => env('LOG_SLACK_USERNAME', 'Laravel Log'),
-			'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
-			'level' => env('LOG_LEVEL', 'critical'),
-			'replace_placeholders' => true,
-		],
-
-		'papertrail' => [
-			'driver' => 'monolog',
-			'level' => env('LOG_LEVEL', 'debug'),
-			'handler' => env('LOG_PAPERTRAIL_HANDLER', SyslogUdpHandler::class),
-			'handler_with' => [
-				'host' => env('PAPERTRAIL_URL'),
-				'port' => env('PAPERTRAIL_PORT'),
-				'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
-			],
-			'processors' => [PsrLogMessageProcessor::class],
 		],
 
 		'stderr' => [

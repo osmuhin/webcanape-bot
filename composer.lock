@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7353aca1dc8ae004b376ff8e12a4099e",
+    "content-hash": "6f3f109cdbe905c6dd4a8f29a1d1aacb",
     "packages": [
         {
             "name": "brick/math",
@@ -1210,16 +1210,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v12.25.0",
+            "version": "v12.26.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "2ee2ba94ae60efd24c7a787cbb1a2f82f714bb20"
+                "reference": "1a8e961a1801794c36c243bb610210d0a2bd61cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/2ee2ba94ae60efd24c7a787cbb1a2f82f714bb20",
-                "reference": "2ee2ba94ae60efd24c7a787cbb1a2f82f714bb20",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/1a8e961a1801794c36c243bb610210d0a2bd61cb",
+                "reference": "1a8e961a1801794c36c243bb610210d0a2bd61cb",
                 "shasum": ""
             },
             "require": {
@@ -1259,9 +1259,9 @@
                 "symfony/http-kernel": "^7.2.0",
                 "symfony/mailer": "^7.2.0",
                 "symfony/mime": "^7.2.0",
-                "symfony/polyfill-php83": "^1.31",
-                "symfony/polyfill-php84": "^1.31",
-                "symfony/polyfill-php85": "^1.31",
+                "symfony/polyfill-php83": "^1.33",
+                "symfony/polyfill-php84": "^1.33",
+                "symfony/polyfill-php85": "^1.33",
                 "symfony/process": "^7.2.0",
                 "symfony/routing": "^7.2.0",
                 "symfony/uid": "^7.2.0",
@@ -1423,7 +1423,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2025-08-18T22:20:52+00:00"
+            "time": "2025-08-27T13:51:06+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -6715,16 +6715,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "12.3.2",
+            "version": "12.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "086553c5b2e0e1e20293d782d788ab768202b621"
+                "reference": "733025d94635a001f67db71a2ed1bab4e7e4a9dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/086553c5b2e0e1e20293d782d788ab768202b621",
-                "reference": "086553c5b2e0e1e20293d782d788ab768202b621",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/733025d94635a001f67db71a2ed1bab4e7e4a9dc",
+                "reference": "733025d94635a001f67db71a2ed1bab4e7e4a9dc",
                 "shasum": ""
             },
             "require": {
@@ -6780,7 +6780,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
                 "security": "https://github.com/sebastianbergmann/php-code-coverage/security/policy",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/12.3.2"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/12.3.3"
             },
             "funding": [
                 {
@@ -6800,7 +6800,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-07-29T06:19:24+00:00"
+            "time": "2025-08-27T14:43:48+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -7049,16 +7049,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "12.3.6",
+            "version": "12.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "a2cab3224f687150ac2f3cc13d99b64ba1e1d088"
+                "reference": "b8fa997c49682979ad6bfaa0d7fb25f54954965e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a2cab3224f687150ac2f3cc13d99b64ba1e1d088",
-                "reference": "a2cab3224f687150ac2f3cc13d99b64ba1e1d088",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b8fa997c49682979ad6bfaa0d7fb25f54954965e",
+                "reference": "b8fa997c49682979ad6bfaa0d7fb25f54954965e",
                 "shasum": ""
             },
             "require": {
@@ -7072,7 +7072,7 @@
                 "phar-io/manifest": "^2.0.4",
                 "phar-io/version": "^3.2.1",
                 "php": ">=8.3",
-                "phpunit/php-code-coverage": "^12.3.2",
+                "phpunit/php-code-coverage": "^12.3.3",
                 "phpunit/php-file-iterator": "^6.0.0",
                 "phpunit/php-invoker": "^6.0.0",
                 "phpunit/php-text-template": "^5.0.0",
@@ -7126,7 +7126,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.3.6"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.3.7"
             },
             "funding": [
                 {
@@ -7150,7 +7150,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-20T14:43:23+00:00"
+            "time": "2025-08-28T05:15:46+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -8122,7 +8122,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.2"
+        "php": "^8.3"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"
