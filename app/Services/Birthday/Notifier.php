@@ -41,6 +41,7 @@ class Notifier
 	{
 		return User::query()
 			->whereRaw("DATE_FORMAT(birthdate, '%d-%m') = ?", [$targetDate->format('d-m')])
+			->where('hidden_from_other', false)
 			->get();
 	}
 

@@ -72,7 +72,7 @@ class DataProvider implements DataProviderContract
 			foreach ($birthdayCollection as $birthday) {
 				if ($this->compare($birthday, $employee)) {
 					$user->birthdate = $birthday->birthdate;
-					$user->notifyAboutBirthday = !preg_match("/\(без\s+рассылки\)/iu", $birthday->name);
+					$user->hiddenFromOther = preg_match("/\(без\s+рассылки\)/iu", $birthday->name);
 
 					break;
 				}

@@ -62,7 +62,7 @@ class DataProviderTest extends TestCase
 			'birthdate' => '2025-01-05',
 			'photo' => 'https://wiki.yandex.ru/storage/ivanov.png',
 			'post' => 'Директор',
-			'notify_about_birthday' => true,
+			'hidden_from_other' => false,
 		], $ivanov->toArray());
 
 		assertSame([
@@ -70,7 +70,7 @@ class DataProviderTest extends TestCase
 			'birthdate' => '2025-09-30',
 			'photo' => 'https://wiki.yandex.ru/storage/petrova.png',
 			'post' => 'Дизайнер',
-			'notify_about_birthday' => false,
+			'hidden_from_other' => true,
 		], $petrov->toArray());
 	}
 

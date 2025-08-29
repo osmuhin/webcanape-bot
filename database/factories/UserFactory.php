@@ -18,7 +18,7 @@ class UserFactory extends Factory
 			'name' => fake()->name(),
 			'photo' => fake()->url(),
 			'post' => fake()->word(),
-			'birthdate' => now()
+			'birthdate' => fake()->timestamp(),
 		];
 	}
 }

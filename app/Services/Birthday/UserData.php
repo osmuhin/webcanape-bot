@@ -14,7 +14,7 @@ class UserData
 
 	public ?string $post;
 
-	public bool $notifyAboutBirthday = true;
+	public bool $hiddenFromOther = false;
 
 	public function toArray()
 	{
@@ -23,7 +23,7 @@ class UserData
 			'birthdate' => $this->birthdate->toDateString(),
 			'photo' => $this->photo,
 			'post' => $this->post,
-			'notify_about_birthday' => $this->notifyAboutBirthday,
+			'hidden_from_other' => $this->hiddenFromOther,
 		];
 	}
 }

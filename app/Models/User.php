@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $photo
  * @property string $post
  * @property \Carbon\Carbon $birthdate
- * @property bool $notify_about_birthday
+ * @property bool $hidden_from_other
  * @property \Carbon\Carbon $created_at
  */
 class User extends Model
@@ -29,7 +29,7 @@ class User extends Model
 	protected $table = 'users';
 
 	protected $casts = [
-		'notify_about_birthday' => 'bool',
+		'hidden_from_other' => 'bool',
 		'birthdate' => 'date'
 	];
 

@@ -49,7 +49,7 @@ class NotifyAboutUpcomingBirthdaysTest extends TestCase
 	public function it_notifies_about_birthdays(Carbon $travelsTo, string $expectedNotificationClass)
 	{
 		User::factory()
-			->has(TelegramUser::factory()->state(fn () => ['blocked' => false]))
+			->has(TelegramUser::factory())
 			->create([
 				'birthdate' => Carbon::createFromDate(month: 1, day: 15)
 			]);
@@ -58,16 +58,56 @@ class NotifyAboutUpcomingBirthdaysTest extends TestCase
 			->has(TelegramUser::factory()->state(fn () => ['blocked' => false]))
 			->create();
 
-		User::factory()
-			->has(TelegramUser::factory()->state(fn () => ['blocked' => true]))
-			->create();
-
 		$this->travelTo($travelsTo);
 
 		$service = new Birthday();
 		$service->makeNotifier()->notifyAboutUpcomingBirthdays();
 
-		Notification::assertCount(1);
 		Notification::assertSentTo([$recipient->telegramUser], $expectedNotificationClass);
+	}
+
+	#[Test]
+	public function it_does_not_send_notifications_if_recipient_blocked_the_bot()
+	{
+		$date = Carbon::createFromDate(month: 1, day: 15);
+
+		$this->travelTo($date);
+
+		User::factory()
+			->has(TelegramUser::factory())
+			->create(['birthdate' => $date]);
+
+		User::factory()
+			->has(TelegramUser::factory()->state(fn () => ['blocked' => true]))
+			->create();
+
+		$service = new Birthday();
+		$service->makeNotifier()->notifyAboutUpcomingBirthdays();
+
+		Notification::assertNothingSent();
+	}
+
+	#[Test]
+	public function it_does_not_send_notifications_if_birthday_person_hides_from_others()
+	{
+		$date = Carbon::createFromDate(month: 1, day: 15);
+
+		$this->travelTo($date);
+
+		User::factory()
+			->has(TelegramUser::factory())
+			->create([
+				'birthdate' => $date,
+				'hidden_from_other' => true
+			]);
+
+		User::factory()
+			->has(TelegramUser::factory()->state(fn () => ['blocked' => false]))
+			->create();
+
+		$service = new Birthday();
+		$service->makeNotifier()->notifyAboutUpcomingBirthdays();
+
+		Notification::assertNothingSent();
 	}
 }
