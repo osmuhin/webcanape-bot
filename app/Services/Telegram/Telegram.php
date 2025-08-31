@@ -5,8 +5,11 @@ namespace App\Services\Telegram;
 use App\Models\TelegramUser;
 use App\Models\User;
 use App\Services\Telegram\Exceptions\TelegramException;
+use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api as TelegramApi;
 use Telegram\Bot\Objects\Chat;
+use Telegram\Bot\Objects\ChatMember;
+use Telegram\Bot\Objects\ChatMemberUpdated;
 use Telegram\Bot\Objects\Update;
 
 use function Illuminate\Filesystem\join_paths;
@@ -14,6 +17,8 @@ use function Illuminate\Filesystem\join_paths;
 class Telegram
 {
 	protected TelegramApi $sdk;
+
+	protected Update $update;
 
 	private string $adminChatId;
 
@@ -24,9 +29,10 @@ class Telegram
 	public function __construct(array $config)
 	{
 		$this->sdk = new TelegramApi($config['bot_token']);
+		$this->update = $this->sdk->getWebhookUpdate();
 
-		$this->adminChatId =        $config['admin_chat_id'];
-		$this->webhookUrl =         $config['webhook_url'];
+		$this->adminChatId = $config['admin_chat_id'];
+		$this->webhookUrl = $config['webhook_url'];
 		$this->webhookSecretToken = $config['webhook_secret_token'];
 	}
 
@@ -58,10 +64,34 @@ class Telegram
 
 	public function handleMessageUpdate(Update $update): void
 	{
-		$this->linkUser(
-			$this->getOrCreateTelegramUser($update->getChat()),
-			$update
-		);
+		$handler = new UpdateHandler($update, $this);
+		$handler->run();
+
+		if (
+			$update->isType('message') &&
+			!$update->getMessage()->hasCommand() &&
+			$update->getMessage()->isType('text')
+		) {
+			$this->linkUser(
+				$this->getOrCreateTelegramUser($update->getChat()),
+				$update
+			);
+
+			return;
+		}
+
+		if ($update->myChatMember instanceof ChatMemberUpdated) {
+			$this->chatMemberUpdated($update->myChatMember);
+
+			return;
+		}
+	}
+
+	private function chatMemberUpdated(chatMemberUpdated $chatMember): void
+	{
+
+
+			// Log::debug('newChatMember', [$update->myChatMember->newChatMember]);
 	}
 
 	public function getOrCreateTelegramUser(Chat $chat): TelegramUser
@@ -89,7 +119,7 @@ class Telegram
 
 		$this->findUser($update)->telegramUser()->save($tgUser);
 
-		$this->getSdk()->sendMessage([
+		$this->sdk->sendMessage([
 			'chat_id' => $update->getChat()->id,
 			'text' => 'Гуд 👍'
 		]);
@@ -97,7 +127,7 @@ class Telegram
 
 	public function sendMessageToAdmin(string $message, array $options = [])
 	{
-		return $this->getSdk()->sendMessage(array_merge([
+		return $this->sdk->sendMessage(array_merge([
 			'chat_id' => $this->adminChatId,
 			'text' => $message
 		], $options));

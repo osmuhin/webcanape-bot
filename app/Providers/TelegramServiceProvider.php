@@ -9,6 +9,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Telegram\Bot\Exceptions\TelegramSDKException;
@@ -48,13 +49,9 @@ class TelegramServiceProvider extends ServiceProvider
 			$telegram = app(Telegram::class);
 			$update = $telegram->getSdk()->commandsHandler(webhook: true);
 
-			if (
-				!$update->getMessage()->hasCommand() &&
-				$update->isType('message') &&
-				$update->getMessage()->isType('text')
-			) {
-				$telegram->handleMessageUpdate($update);
-			}
+			Log::debug('tg-webhook: ', request()->all());
+
+			$telegram->handleMessageUpdate($update);
 		})
 			->name(self::ROUTE_NAME)
 			->middleware(WebhookMiddleware::class);
