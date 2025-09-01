@@ -19,29 +19,29 @@ class TableState implements Iterator
 
 	public function rewind(): void
 	{
-        $this->iteratorPosition = 0;
-    }
+		$this->iteratorPosition = 0;
+	}
 
 	#[ReturnTypeWillChange]
-    public function current(): mixed
+	public function current(): mixed
 	{
-        return $this->rows[$this->iteratorPosition];
-    }
+		return $this->rows[$this->iteratorPosition];
+	}
 
 	#[ReturnTypeWillChange]
-    public function key(): mixed
+	public function key(): mixed
 	{
-        return $this->iteratorPosition;
-    }
+		return $this->iteratorPosition;
+	}
 
-    public function next(): void {
-        $this->iteratorPosition++;
-    }
+	public function next(): void {
+		$this->iteratorPosition++;
+	}
 
-    public function valid(): bool
+	public function valid(): bool
 	{
-        return isset($this->rows[$this->iteratorPosition]);
-    }
+		return isset($this->rows[$this->iteratorPosition]);
+	}
 
 	public function handleLine(string $line): void
 	{

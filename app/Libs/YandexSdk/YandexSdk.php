@@ -22,7 +22,7 @@ abstract class YandexSdk extends Connector
 	}
 
 	protected function defaultAuth(): HeaderAuthenticator
-    {
-        return new HeaderAuthenticator("OAuth {$this->token}");
-    }
+	{
+		return new HeaderAuthenticator("OAuth {$this->token}");
+	}
 }

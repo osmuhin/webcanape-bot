@@ -17,8 +17,8 @@ function split_full_name(string $fullName, bool $firstNameAtBeginning = true): a
 {
 	$parts = preg_split('/\s+/', trim($fullName));
 
-    $firstName = $parts[0] ?? '';
-    $lastName = $parts[1] ?? '';
+	$firstName = $parts[0] ?? '';
+	$lastName = $parts[1] ?? '';
 
 	return $firstNameAtBeginning ? [$firstName, $lastName] : [$lastName, $firstName];
 }

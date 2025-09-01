@@ -21,9 +21,9 @@ class GetPage extends Request
 	}
 
 	public function resolveEndpoint(): string
-    {
-        return '/v1/pages';
-    }
+	{
+		return '/v1/pages';
+	}
 
 	public function withField(string $field): self
 	{
@@ -35,12 +35,12 @@ class GetPage extends Request
 	}
 
 	protected function defaultQuery(): array
-    {
-        return [
-            'slug' => $this->slug,
-            'fields' => $this->buildFields()
-        ];
-    }
+	{
+		return [
+			'slug' => $this->slug,
+			'fields' => $this->buildFields()
+		];
+	}
 
 	protected function buildFields(): string
 	{

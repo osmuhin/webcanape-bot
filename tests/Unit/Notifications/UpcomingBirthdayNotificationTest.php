@@ -21,24 +21,24 @@ use function PHPUnit\Framework\assertTrue;
 class UpcomingBirthdayNotificationTest extends TestCase
 {
 	public static function messagesProvider(): array
-    {
-        return [
-            [Today::class, <<<MSG
+	{
+		return [
+			[Today::class, <<<MSG
 🎉🎁 Иван Иванов (Программист) <b><u>сегодня</u></b> празднует день рождения (15 января).
 <a href="/image.png">Фото</a>
 MSG],
-            [Tomorrow::class,
+			[Tomorrow::class,
 <<<MSG
 🟠 Иван Иванов (Программист) <b><u>завтра</u></b> будет праздновать день рождения (15 января).
 <a href="/image.png">Фото</a>
 MSG],
-            [InAWeek::class,
+			[InAWeek::class,
 <<<MSG
 🟢 Иван Иванов (Программист) <b><u>через неделю</u></b> (15 января) будет праздновать день рождения.
 <a href="/image.png">Фото</a>
 MSG]
-        ];
-    }
+		];
+	}
 
 	#[Before]
 	public function setLocale()

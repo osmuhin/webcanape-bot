@@ -94,12 +94,10 @@ class NotifyAboutUpcomingBirthdaysTest extends TestCase
 
 		$this->travelTo($date);
 
-		User::factory()
-			->has(TelegramUser::factory())
-			->create([
-				'birthdate' => $date,
-				'hidden_from_other' => true
-			]);
+		User::factory()->create([
+			'birthdate' => $date,
+			'hidden_from_other' => true
+		]);
 
 		User::factory()
 			->has(TelegramUser::factory()->state(fn () => ['blocked' => false]))

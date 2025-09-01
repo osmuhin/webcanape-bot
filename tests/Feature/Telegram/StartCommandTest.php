@@ -97,10 +97,10 @@ class StartCommandTest extends TestCase
 		$mock = Mockery::mock(TelegramApi::class);
 		$mock->shouldReceive('sendMessage')
 			->with(Mockery::on(fn ($args) =>
-                $args['chat_id'] == $this->chat->id
-                && $args['text']
-                && $args['parse_mode'] === 'MarkdownV2'
-            ))
+				$args['chat_id'] == $this->chat->id
+				&& $args['text']
+				&& $args['parse_mode'] === 'MarkdownV2'
+			))
 			->once();
 
 		return $mock;
