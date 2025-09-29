@@ -25,7 +25,7 @@ return new class extends Migration
 			$table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
 			$table->string('first_name')->nullable();
 			$table->string('last_name')->nullable();
-			$table->string('username')->unique();
+			$table->string('username')->unique()->nullable();
 			$table->string('chat_id')->unique();
 			$table->boolean('blocked')->default(false);
 			$table->timestamp('created_at')->useCurrent();
