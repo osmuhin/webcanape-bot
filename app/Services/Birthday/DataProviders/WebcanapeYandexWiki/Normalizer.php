@@ -51,7 +51,7 @@ class Normalizer
 	/**
 	 * @param string $mdPhoto Example: ![Иванов (Директор).png](/storage/ivanov.png =349x)
 	 */
-	public static function getPhoto(string $input): string
+	public static function getPhoto(string $input): ?string
 	{
 		$photo = static::make($input)
 			->htmlEntityDecode()
@@ -61,11 +61,17 @@ class Normalizer
 			->emptyStringToNull()
 			->get();
 
+		if ($photo === null) {
+			return null;
+		}
+
 		$photo = preg_replace("/\!\[.*?]/", '', $photo);
 		preg_match("/\((?'url'.*?)\s+=.*\)/", $photo, $matches);
 
 		if ($url = Arr::get($matches, 'url')) {
-			$url = join_paths(self::PHOTO_BASE_URL, $url);
+			if (!str_starts_with($url, 'http')) {
+				$url = join_paths(self::PHOTO_BASE_URL, $url);
+			}
 		}
 
 		return $url;
