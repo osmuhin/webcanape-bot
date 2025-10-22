@@ -21,36 +21,44 @@ abstract class AbstractTableAdapter
 	protected function normalizeCell(?string $value): ?string
 	{
 		if ($value === null) {
-			return null;
+			return $value;
 		}
 
-		$value = html_entity_decode($value);
-		$value = strip_tags($value);
-		$value = preg_replace('/\x{A0}/u', ' ', $value); // заменяет все неразрывные пробелы на обычные пробелы
-		$value = preg_replace('/\*/', ' ', $value);
-		$value = trim($value, characters: " \n\r\t\v\0*");
-		$value = preg_replace('/\s{2,}/u', ' ', $value);
-
-		return $value === '' ? null : $value;
+		return Normalizer::make($value)
+			->htmlEntityDecode()
+			->stripTags()
+			->shrinkWhitespaces()
+			->trim()
+			->emptyStringToNull()
+			->get();
 	}
 
 	protected function defineColumnOrder(array $headRow): void
 	{
 		$mapHeaderColumns = $this->getMapHeaderColumns();
 
-		foreach ($headRow as $cellIdx => $cellValue) {
-			$value = $this->normalizeCell($cellValue);
+		foreach ($mapHeaderColumns as $target => $columnName) {
+			foreach ($headRow as $cellIdx => $value) {
+				if (str_contains($value, $target)) {
+					$this->columnOrder[$columnName] = $cellIdx;
+					unset($headRow[$cellIdx]);
+					unset($mapHeaderColumns[$target]);
 
-			if ($value && $columnName = Arr::get($mapHeaderColumns, $value)) {
-				$this->columnOrder[$columnName] = $cellIdx;
+					break 1;
+				}
 			}
 		}
 	}
 
 	protected function getCell(array $row, string $cellName): ?string
 	{
+		return $row[$this->columnOrder[$cellName]];
+	}
+
+	protected function getNormalizedCell(array $row, string $cellName): ?string
+	{
 		return $this->normalizeCell(
-			$row[$this->columnOrder[$cellName]]
+			$this->getCell($row, $cellName)
 		);
 	}
 }

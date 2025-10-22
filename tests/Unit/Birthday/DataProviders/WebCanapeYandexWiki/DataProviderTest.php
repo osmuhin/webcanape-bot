@@ -99,6 +99,6 @@ class DataProviderTest extends TestCase
 
 	private function getBirthdays()
 	{
-		return "#|\n||\n\n**Дата**\n\n|\n\n**ФИО**\n\n||\n||\n\n05 января\n\n|\n\nИван Иванов\n\n||\n||\n\n30 сентября\n\n|\n\nИрина Петрова  (БЕз рассылки)\n\n||\n|#\n\n&nbsp;\n";
+		return "#|\n||\n\n**Дата**\n\n|\n\n**ФИО**\n\n||\n||\n\n[blue]{05 января}\n\n|\n\n(red){Иван Иванов}\n\n||\n||\n\n30 сентября\n\n|\n\nИрина Петрова  (БЕз рассылки)\n\n||\n|#\n\n&nbsp;\n";
 	}
 }

@@ -28,18 +28,11 @@ services:
   cron:
     build:
       context: ./cron
-      args:
-        SCHEDULER_TOKEN: $SCHEDULER_TOKEN
+    environment:
+      SCHEDULER_TOKEN: ${SCHEDULER_TOKEN}
     depends_on:
       - nginx
-    volumes:
-      - ../.runtime/logs/cron:/var/log/cron
     restart: unless-stopped
-    command:
-      - crond
-      - "-f"
-      - "-L"
-      - "/dev/stdout"
     networks:
       - database
       - default
@@ -49,7 +42,6 @@ services:
     volumes:
       - ../:/app
       - ../.runtime/cache/composer:/.composer/cache
-      - ../.runtime/logs/php:/var/log/php
     user: $USER_ID:$GROUP_ID
     working_dir: /app
     command:

@@ -2,14 +2,8 @@
 
 namespace App\Services\Birthday\DataProviders\WebcanapeYandexWiki;
 
-use Illuminate\Support\Arr;
-
-use function Illuminate\Filesystem\join_paths;
-
 class EmployeeTableAdapter extends AbstractTableAdapter
 {
-	public const PHOTO_BASE_URL = 'https://wiki.yandex.ru';
-
 	/**
 	 * @return \App\Services\Birthday\DataProviders\WebcanapeYandexWiki\EmployeeData[]
 	 */
@@ -24,7 +18,7 @@ class EmployeeTableAdapter extends AbstractTableAdapter
 				continue;
 			}
 
-			if ($this->getCell($row, 'post')) {
+			if ($this->getNormalizedCell($row, 'post')) {
 				$collection[] = $this->makeDto($row);
 			}
 		}
@@ -44,35 +38,18 @@ class EmployeeTableAdapter extends AbstractTableAdapter
 	private function makeDto(array $row): EmployeeData
 	{
 		$dto = new EmployeeData();
-		$dto->name = $this->getCell($row, 'name');
-		$dto->post = $this->getCell($row, 'post');
-		$dto->photo = $this->normalizePhoto(
-			$this->getCell($row, 'photo')
-		);
-
-		[$dto->firstName, $dto->lastName] = split_full_name(
+		$dto->name = Normalizer::getName(
 			$this->getCell($row, 'name')
 		);
 
+		$dto->post = $this->getNormalizedCell($row, 'post');
+
+		$dto->photo = Normalizer::getPhoto(
+			$this->getCell($row, 'photo')
+		);
+
+		[$dto->firstName, $dto->lastName] = split_full_name($dto->name);
+
 		return $dto;
-	}
-
-	/**
-	 * @param string $mdPhoto Example: ![Иванов (Директор).png](/storage/ivanov.png =349x)
-	 */
-	private function normalizePhoto(?string $mdPhoto): ?string
-	{
-		if (!$mdPhoto) {
-			return null;
-		}
-
-		$photo = preg_replace("/\!\[.*?]/", '', $mdPhoto);
-		preg_match("/\((?'url'.*?)\s+=.*\)/", $photo, $matches);
-
-		if ($url = Arr::get($matches, 'url')) {
-			$url = join_paths(self::PHOTO_BASE_URL, $url);
-		}
-
-		return $url;
 	}
 }
