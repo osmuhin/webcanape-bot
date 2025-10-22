@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
 	)
 	->withProviders([
 		\App\Providers\AppServiceProvider::class,
+		\App\Providers\CronServiceProvider::class,
 		\App\Providers\BirthdayServiceProvider::class,
 		\App\Providers\TelegramServiceProvider::class
 	])
